@@ -1,7 +1,13 @@
 ## Backend
 
 ### Start virtual environment
+`cd backend`
+
+MacOS / Linux
 `source venv/bin/activate`
+
+Windows
+`venv\Scripts\activate`
 
 ### Setup
 `cd backend`
