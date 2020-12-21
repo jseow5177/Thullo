@@ -4,9 +4,11 @@
 `cd backend`
 
 MacOS / Linux
+
 `source venv/bin/activate`
 
 Windows
+
 `venv\Scripts\activate`
 
 ### Setup
@@ -21,3 +23,10 @@ Windows
 
 ### Deactivate virtual environment
 `deactivate`
+
+## Frontend
+
+### Start React frontend
+`cd frontend`
+
+`npm start`
