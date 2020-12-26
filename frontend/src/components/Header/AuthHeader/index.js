@@ -1,9 +1,12 @@
 import React from 'react'
+import styles from './AuthHeader.module.scss'
+
+import Logo from '../../Logo.js'
 
 function AuthHeader() {
   return (
-    <div>
-      <h1>Auth Header</h1>
+    <div className={styles.authHeader}>
+      <Logo size='9rem' variant="text-and-logo" />
     </div>
   )
 }
