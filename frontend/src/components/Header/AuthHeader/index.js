@@ -6,7 +6,7 @@ import Logo from '../../Logo.js'
 function AuthHeader() {
   return (
     <div className={styles.authHeader}>
-      <Logo size='9rem' variant="text-and-logo" />
+      <Logo size='7rem' variant="text-and-logo" />
     </div>
   )
 }
