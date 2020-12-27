@@ -7,10 +7,7 @@ def check_password(password, user):
   """
   Validate user password before signup
 
-  1. UserAttributeSimilarityValidator (require user object)
-  2. MinimumLengthValidator
-  3. CommonPasswordValidator
-  4. NumericPasswordValidator
+  Validation is done with zxcvbn
   """
 
   errors = {}
