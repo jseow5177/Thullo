@@ -44,7 +44,7 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'auth.apps.AuthConfig',
-    'zxcvbn_password'
+    'django_zxcvbn_password_validator'
 ]
 
 MIDDLEWARE = [
