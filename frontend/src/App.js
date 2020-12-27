@@ -6,16 +6,21 @@ import store from './store'
 
 import RouteWrapper from './components/RouteWrapper'
 
-import Layout from './components/Layout/'
+import MainLayout from './components/Layout/MainLayout'
+import LandingLayout from './components/Layout/LandingLayout'
+import AuthLayout from './components/Layout/AuthLayout/'
+
 import Landing from './modules/auth/views/Landing/'
+import UserAuth from './modules/auth/views/UserAuth'
 
 function App() {
   return (
     <Provider store={store}>
       <Router>
         <Switch>
-          <RouteWrapper exact path="/" isPrivate={false} component={Landing} layout={Layout} />
-          <RouteWrapper exact path="/home" layout={Layout} />
+          <RouteWrapper exact path="/home" layout={MainLayout} />
+          <RouteWrapper exact path={["/login", "/signup"]} isPrivate={false} component={UserAuth} layout={AuthLayout} />
+          <RouteWrapper exact path="/" isPrivate={false} component={Landing} layout={LandingLayout} />
         </Switch>
       </Router>
     </Provider>
