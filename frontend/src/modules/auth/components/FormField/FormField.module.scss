@@ -1,0 +1,14 @@
+@import '../../../../assets/styles/colors.scss';
+
+.input {
+  margin: 0 auto;
+  margin-top: 1rem;
+
+  .errorMsg {
+    color: $error-color;
+    text-align: right;
+    padding: 0;
+    margin-bottom: 5px;
+    font-size: 12px;
+  }
+}
