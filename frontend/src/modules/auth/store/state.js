@@ -1,6 +1,7 @@
 const initialState = {
   isAuthenticated: false,
-  user: null
+  user: null,
+  error: null
 }
 
 export default initialState
