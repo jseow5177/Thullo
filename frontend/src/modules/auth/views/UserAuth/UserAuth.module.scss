@@ -1,0 +1,25 @@
+.root {
+  max-width: 22rem;
+  margin: 0 auto;
+
+  .header, .content {
+    padding: 1.5rem;
+  }
+
+  .header {
+    padding-bottom: 0;
+  }
+
+  form {
+    text-align: center;
+    padding: 0rem;
+
+    button {
+      margin: 1.5rem 0;
+    }
+
+    .clickableIcon {
+      cursor: pointer;
+    }
+  }
+}
