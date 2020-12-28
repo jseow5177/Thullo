@@ -10,16 +10,13 @@ class UserSerializer(serializers.ModelSerializer):
 
   def validate(self, data):
     """
-    Add password validation logic.
+    Add password validation logic
 
-    Called inside the implementation of serializers.is_valid()
+    This function is called inside the implementation of serializers.is_valid()
     """
-    # At here, basic fields validation has already been performed
-    user = User(**data)
-
     # Validate password
     password = data.get('password')
-    check_password(password, user)
+    check_password(password)
 
     return super().validate(data)
 
@@ -43,5 +40,7 @@ class EmailTokenObtainSerializer(TokenObtainSerializer):
 class CustomTokenObtainPairSerializer(TokenObtainPairSerializer, EmailTokenObtainSerializer):
   """
   Reimplement TokenObtainPairSerializer with EmailTokenObtainSerializer
+
+  Used as the serializer_class of EmailTokenObtainPairView
   """
   pass
