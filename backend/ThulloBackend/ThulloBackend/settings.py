@@ -114,13 +114,11 @@ AUTH_PASSWORD_VALIDATORS = [
     #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     # },
     {
-      'NAME': 'zxcvbn_password.ZXCVBNValidator',
-      'OPTIONS': {
-        'min_score': 3,
-        # 'user_attributes': ('username', 'email')
-      }
+      'NAME': 'django_zxcvbn_password_validator.ZxcvbnPasswordValidator',
     }
 ]
+
+PASSWORD_MINIMAL_STRENGTH = 3
 
 
 # Internationalization
