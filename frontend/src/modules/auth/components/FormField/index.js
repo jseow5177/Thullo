@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, forwardRef, useImperativeHandle } from 'react'
 import PropTypes from 'prop-types'
 
 import TextField from '@material-ui/core/TextField'
@@ -6,7 +6,7 @@ import InputAdornment from '@material-ui/core/InputAdornment'
 
 import styles from './FormField.module.scss'
 
-function FormField({
+const FormField = forwardRef(({
   fieldId,
   label,
   type,
@@ -19,9 +19,8 @@ function FormField({
   endIcon,
   hideLabel = false,
   required = false,
-}) {
+}, ref) => {
 
-  const [isDirty, setIsDirty] = useState(false)
   const [errors, setErrors] = useState([])
 
   const handleChange = (e) => {
@@ -34,25 +33,30 @@ function FormField({
 
   const runValidator = () => {
     const isEmpty = value.length === 0
-    const requiredMissing = isDirty && required && isEmpty
+    const requiredMissing = required && isEmpty
+
+    const newErrors = []
 
     if (requiredMissing) {
-      // If field is required and is empty, add required error to state
-      setErrors([...errors, `${label} is required`])
-    } else if (typeof validator === 'function') {
+      // If field is required and is empty, add required error
+      newErrors.push(`${label} is required`)
+    } else if (validator instanceof Function) {
       try {
         validator(value)
       } catch (e) {
-        // If validator throws error, add validation error to state
-        setErrors([...errors, e.message])
+        // If validator throws error, add validation error
+        newErrors.push(e.message)
       }
     }
+
+    setErrors([...errors, ...newErrors])
+
+    return newErrors.length === 0
   }
 
-  const inputDirty = () => {
-    // Set dirty to true and always remain true
-    setIsDirty(true)
-  }
+  useImperativeHandle(ref, () => ({
+    runValidator
+  }))
 
   return (
     <div className={styles.input}>
@@ -65,7 +69,6 @@ function FormField({
         type={type}
         value={value}
         fullWidth={true}
-        onFocus={inputDirty}
         onChange={handleChange}
         onBlur={runValidator}
         label={!hideLabel && label}
@@ -86,7 +89,7 @@ function FormField({
       {children}
     </div>
   )
-}
+})
 
 FormField.propTypes = {
   type: PropTypes.string.isRequired,
