@@ -45,8 +45,24 @@ class ThulloErrorHandler extends Error {
   }
 
   handle400() {
-    // Temporary
-    console.log(this.errorData)
+    /**
+     * Assume errorData is an object that follows the structure of a form.
+     * The keys are the form fields while the values are an array of errors.
+     * For example:
+     * {
+     *   email: ['email is invalid']
+     * }
+     * For now, we only return the first error of the first field.
+     */
+    const fields = Object.keys(this.errorData)
+    if (fields.length !== 0) {
+      const firstField = fields[0]
+      const errors = this.errorData[firstField]
+
+      // Capitalize error message and remove periods
+      return capitalize(errors[0].split('.').join(''))
+    }
+    return ''
   }
 
   handle401() {
@@ -103,7 +119,6 @@ class ThulloErrorHandler extends Error {
   }
 
   handleOthers() {
-    // Perhaps something more meaningful?
     return 'Something went horribly wrong! Please try again later.'
   }
 
