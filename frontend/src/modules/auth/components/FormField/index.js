@@ -1,4 +1,4 @@
-import React, { useState, forwardRef, useImperativeHandle } from 'react'
+import React, { forwardRef, useImperativeHandle } from 'react'
 import PropTypes from 'prop-types'
 
 import TextField from '@material-ui/core/TextField'
@@ -15,13 +15,13 @@ const FormField = forwardRef(({
   children,
   value,
   onValueChanged,
+  errors,
+  setErrors,
   startIcon,
   endIcon,
   hideLabel = false,
   required = false,
 }, ref) => {
-
-  const [errors, setErrors] = useState([])
 
   const handleChange = (e) => {
     // Clear errors
@@ -96,12 +96,14 @@ FormField.propTypes = {
   fieldId: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
+  onValueChanged: PropTypes.func.isRequired,
+  errors: PropTypes.array.isRequired,
+  setErrors: PropTypes.func.isRequired,
   placeholder: PropTypes.string,
   hideLabel: PropTypes.bool,
   required: PropTypes.bool,
   children: PropTypes.node,
   validator: PropTypes.func,
-  onValueChanged: PropTypes.func,
   startIcon: PropTypes.node,
   endIcon: PropTypes.node
 }
