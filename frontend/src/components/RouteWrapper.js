@@ -10,7 +10,7 @@ const RouteWrapper = ({ component: Component, layout: Layout, auth, isPrivate = 
      * 1. Route is private and user is already authenticated or
      * 2. Route is not private
      * 
-     * Else, go to the login / signup page
+     * Else, go to the login
      */
     if ((isPrivate && auth.isAuthenticated) || !isPrivate) {
       return (
@@ -19,7 +19,7 @@ const RouteWrapper = ({ component: Component, layout: Layout, auth, isPrivate = 
         </Layout>
       )
     } else {
-      return <Redirect to="/" />
+      return <Redirect to="/login" />
     }
   }
 
