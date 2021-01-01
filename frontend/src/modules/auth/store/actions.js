@@ -1,5 +1,12 @@
+import {
+  SET_CURRENT_USER,
+  SET_AUTHENTICATING,
+  CLEAR_AUTHENTICATING,
+  SET_ERROR,
+  CLEAR_ERROR
+} from './types'
+
 import AuthService from '../services/auth.service'
-import { SET_CURRENT_USER, SET_AUTHENTICATING, CLEAR_AUTHENTICATING, SET_ERROR, CLEAR_ERROR } from './types'
 
 export const login = (email, password) => async (dispatch) => {
 
@@ -47,10 +54,14 @@ export const signup = (email, username, password) => async (dispatch) => {
         message: error.message
       }
     })
-    
+
     return false
   } finally {
     dispatch({ type: CLEAR_AUTHENTICATING })
   }
 
 }
+
+export const clearError = () => ({
+  type: CLEAR_ERROR
+})
