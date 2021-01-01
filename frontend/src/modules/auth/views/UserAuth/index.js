@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { connect } from 'react-redux'
-import { useLocation } from 'react-router-dom'
+import { useLocation, useHistory } from 'react-router-dom'
 import PasswordStrengthBar from 'react-password-strength-bar'
 
 // Validators
@@ -10,7 +10,7 @@ import { validators, PASSWORD_MIN_LENGTH } from '../../utils'
 import AUTH from '../../constants'
 
 // Auth actions
-import { login, signup } from '../../store/actions'
+import { login, signup, clearError } from '../../store/actions'
 
 // Custom Components
 import FormField from '../../components/FormField'
@@ -34,7 +34,9 @@ import PersonIcon from '@material-ui/icons/Person'
 
 import styles from './UserAuth.module.scss'
 
-function UserAuth({ auth, login, signup }) {
+function UserAuth({ auth, login, signup, clearError }) {
+
+  const history = useHistory()
 
   const location = useLocation()
   const activePath = location.pathname
@@ -42,12 +44,15 @@ function UserAuth({ auth, login, signup }) {
 
   const emailRef = useRef()
   const [email, setEmail] = useState('')
+  const [emailErrors, setEmailErrors] = useState([])
 
   const passwordRef = useRef()
   const [password, setPassword] = useState('')
+  const [passwordErrors, setPasswordErrors] = useState([])
 
   const usernameRef = useRef()
   const [username, setUsername] = useState('')
+  const [usernameErrors, setUsernameErrors] = useState([])
 
   const [isPasswordVisible, setIsPasswordVisible] = useState(false)
 
@@ -68,102 +73,138 @@ function UserAuth({ auth, login, signup }) {
     const passwordIsValid = passwordRef.current.runValidator()
     const usernameIsValid = usernameRef.current && usernameRef.current.runValidator()
 
-    if (emailIsValid && passwordIsValid) {
-      if (isSignUp && usernameIsValid) {
-        await signup(email, username, password)
-      } else if (!isSignUp) {
-        await login(email, password)
+    const canSignUp = isSignUp && emailIsValid && passwordIsValid && usernameIsValid
+    const canLogin = !isSignUp && emailIsValid && passwordIsValid
+
+    if (canSignUp) {
+      const signUpSuccess = await signup(email, username, password)
+
+      if (signUpSuccess) {
+        history.push('/login')
+      }
+    } else if (canLogin) {
+      const loginSuccess = await login(email, password)
+
+      if (loginSuccess) {
+        history.push('/home')
       }
     }
   }
 
-  return (
-    <Card className={styles.root}>
-      {
-        auth.error !== null &&
-        <CardHeader
-          className={styles.header}
-          title={
-            <Alert variant="filled" severity="error">
-              {auth.error.message}
-            </Alert>
-          }
-        />
-      }
-      <CardContent className={styles.content}>
-        <Typography variant="h6" align="center">
-          {AUTH[activePath].title}
-        </Typography>
-        <form>
-          <FormField
-            ref={emailRef}
-            fieldId="email"
-            label="Email"
-            type="text"
-            validator={isSignUp ? validators.validateEmail : null}
-            children={null}
-            value={email}
-            onValueChanged={setEmail}
-            startIcon={<EmailIcon />}
-            required={true}
+  const resetErrors = () => {
+    setEmailErrors([]) // Clear email field errors
+    setUsernameErrors([]) // Clear username field errors
+    setPasswordErrors([]) // Clear password field errors
+    clearError() // Clear errors in redux store
+  }
+
+  const navigateTo = (e) => {
+    e.preventDefault() // Prevent page refresh
+    resetErrors() // Clear existing errors
+    history.push(AUTH[activePath].navigateTo)
+  }
+
+  const renderUserAuthForm = () => {
+    return (
+      <Card className={styles.root}>
+        {
+          auth.error !== null &&
+          <CardHeader
+            className={styles.header}
+            title={
+              <Alert variant="filled" severity="error">
+                {auth.error.message}
+              </Alert>
+            }
           />
-          {
-            isSignUp &&
+        }
+        <CardContent className={styles.content}>
+          <Typography variant="h6" align="center">
+            {AUTH[activePath].title}
+          </Typography>
+          <form>
             <FormField
-              ref={usernameRef}
-              fieldId="username"
-              label="Username"
+              ref={emailRef}
+              fieldId="email"
+              label="Email"
               type="text"
-              validator={validators.validateUsername}
+              validator={isSignUp ? validators.validateEmail : null}
               children={null}
-              value={username}
-              onValueChanged={setUsername}
-              startIcon={<PersonIcon />}
+              value={email}
+              onValueChanged={setEmail}
+              errors={emailErrors}
+              setErrors={setEmailErrors}
+              startIcon={<EmailIcon />}
               required={true}
             />
-          }
-          <FormField
-            ref={passwordRef}
-            fieldId="password"
-            label="Password"
-            type={isPasswordVisible ? 'text' : 'password'}
-            validator={isSignUp ? validators.validatePasswordStrength : null}
-            children={
-              (
-                password.length > 0 && isSignUp &&
-                <PasswordStrengthBar
-                  password={password}
-                  minLength={PASSWORD_MIN_LENGTH}
-                  scoreWords={['weak', 'weak', 'okay', 'strong', 'very strong']}
-                />
-              )
-            }
-            value={password}
-            onValueChanged={setPassword}
-            startIcon={<LockIcon />}
-            endIcon={renderPasswordVisibilityIcon()}
-            required={true}
-          />
-          <Button
-            variant="contained"
-            color="primary"
-            fullWidth={true}
-            onClick={handleSubmit}
-          >
             {
-              auth.authenticating
-                ? <CircularProgress size={25} className={styles.spinner} />
-                : AUTH[activePath].btnText
+              isSignUp &&
+              <FormField
+                ref={usernameRef}
+                fieldId="username"
+                label="Username"
+                type="text"
+                validator={validators.validateUsername}
+                children={null}
+                value={username}
+                onValueChanged={setUsername}
+                errors={usernameErrors}
+                setErrors={setUsernameErrors}
+                startIcon={<PersonIcon />}
+                required={true}
+              />
             }
-          </Button>
-        </form>
-        <Typography variant="body2" align="center">
-          <Link href={AUTH[activePath].navigateTo}>
-            {AUTH[activePath].linkText}
-          </Link>
-        </Typography>
-      </CardContent>
-    </Card>
+            <FormField
+              ref={passwordRef}
+              fieldId="password"
+              label="Password"
+              type={isPasswordVisible ? 'text' : 'password'}
+              validator={isSignUp ? validators.validatePasswordStrength : null}
+              children={
+                (
+                  password.length > 0 && isSignUp &&
+                  <PasswordStrengthBar
+                    password={password}
+                    minLength={PASSWORD_MIN_LENGTH}
+                    scoreWords={['weak', 'weak', 'okay', 'strong', 'very strong']}
+                  />
+                )
+              }
+              value={password}
+              onValueChanged={setPassword}
+              errors={passwordErrors}
+              setErrors={setPasswordErrors}
+              startIcon={<LockIcon />}
+              endIcon={renderPasswordVisibilityIcon()}
+              required={true}
+            />
+            <Button
+              variant="contained"
+              color="primary"
+              fullWidth={true}
+              onClick={handleSubmit}
+            >
+              {
+                auth.authenticating
+                  ? <CircularProgress size={25} className={styles.spinner} />
+                  : AUTH[activePath].btnText
+              }
+            </Button>
+          </form>
+          <Typography variant="body2" align="center">
+            <Link href="" onClick={navigateTo}>
+              {AUTH[activePath].linkText}
+            </Link>
+          </Typography>
+        </CardContent>
+      </Card>
+    )
+  }
+
+  return (
+    <>
+      {renderUserAuthForm()}
+    </>
   )
 }
 
@@ -175,6 +216,7 @@ const mapDispatchToProps = dispatch => {
   return {
     login: (email, password) => dispatch(login(email, password)),
     signup: (email, username, password) => dispatch(signup(email, username, password)),
+    clearError: () => dispatch(clearError())
   }
 }
 
