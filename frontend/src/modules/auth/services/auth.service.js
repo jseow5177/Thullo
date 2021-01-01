@@ -1,6 +1,6 @@
 import ApiService from '../../../common/services/api.service'
 import TokenService from '../../../common/services/token.service'
-import ThulloErrorHandler from '../../../common/error_handler'
+import ThulloErrorHandler from '../../../common/errorHandler'
 
 class AuthenticationError extends ThulloErrorHandler {
   constructor(errorResponse) {
