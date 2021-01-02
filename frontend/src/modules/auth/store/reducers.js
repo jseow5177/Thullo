@@ -1,13 +1,24 @@
-import { SET_CURRENT_USER, SET_AUTHENTICATING, CLEAR_AUTHENTICATING, SET_ERROR, CLEAR_ERROR } from './types'
+import {
+  SET_AUTHENTICATED,
+  CLEAR_AUTHENTICATED,
+  SET_AUTHENTICATING,
+  CLEAR_AUTHENTICATING,
+  SET_ERROR,
+  CLEAR_ERROR
+} from './types'
 import initialState from './state'
 
 const reducers = (state = initialState, action) => {
   switch (action.type) {
-    case SET_CURRENT_USER:
+    case SET_AUTHENTICATED:
       return {
         ...state,
         isAuthenticated: true,
-        user: action.payload
+      }
+    case CLEAR_AUTHENTICATED:
+      return {
+        ...state,
+        isAuthenticated: false
       }
     case SET_AUTHENTICATING:
       return {

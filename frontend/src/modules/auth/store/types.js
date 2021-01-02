@@ -1,10 +1,9 @@
-// Set the current authenticated user
-export const SET_CURRENT_USER = 'SET_CURRENT_USER'
+export const SET_AUTHENTICATED = 'SET_AUTHENTICATED'
 
-// Indicate that the backend is processing the auth request
+export const CLEAR_AUTHENTICATED = 'CLEAR_AUTHENTICATED'
+
 export const SET_AUTHENTICATING = 'SET_AUTHENTICATING'
 
-// Indicate that the backend is done processing the auth request
 export const CLEAR_AUTHENTICATING = 'CLEAR_AUTHENTICATING'
 
 export const SET_ERROR = 'SET_ERROR'
