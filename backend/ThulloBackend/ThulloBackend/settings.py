@@ -144,7 +144,7 @@ CORS_ORIGIN_ALLOW_ALL = True
 STATIC_URL = '/static/'
 
 # JWT Configuration
-SIMPLE_JTW = {
+SIMPLE_JWT = {
   'JWT_ALLOW_REFRESH': True,
   'ACCESS_TOKEN_LIFETIME': timedelta(minutes=1),
   'REFRESH_TOKEN_LIFETIME': timedelta(days=7)
