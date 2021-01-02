@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { connect } from 'react-redux'
-import { useLocation, withRouter } from 'react-router-dom'
+import { withRouter } from 'react-router-dom'
 import PasswordStrengthBar from 'react-password-strength-bar'
 
 // Validators
@@ -34,9 +34,8 @@ import PersonIcon from '@material-ui/icons/Person'
 
 import styles from './UserAuth.module.scss'
 
-function UserAuth({ auth, login, signup, clearError, history }) {
+function UserAuth({ auth, login, signup, clearError, history, location }) {
 
-  const location = useLocation()
   const activePath = location.pathname
   const isSignUp = activePath === '/signup'
 
