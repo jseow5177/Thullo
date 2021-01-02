@@ -1,6 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { connect } from 'react-redux'
-import { useLocation, useHistory } from 'react-router-dom'
+import { useLocation, withRouter } from 'react-router-dom'
 import PasswordStrengthBar from 'react-password-strength-bar'
 
 // Validators
@@ -34,9 +34,7 @@ import PersonIcon from '@material-ui/icons/Person'
 
 import styles from './UserAuth.module.scss'
 
-function UserAuth({ auth, login, signup, clearError }) {
-
-  const history = useHistory()
+function UserAuth({ auth, login, signup, clearError, history }) {
 
   const location = useLocation()
   const activePath = location.pathname
@@ -77,17 +75,9 @@ function UserAuth({ auth, login, signup, clearError }) {
     const canLogin = !isSignUp && emailIsValid && passwordIsValid
 
     if (canSignUp) {
-      const signUpSuccess = await signup(email, username, password)
-
-      if (signUpSuccess) {
-        history.push('/login')
-      }
+      await signup(email, username, password)
     } else if (canLogin) {
-      const loginSuccess = await login(email, password)
-
-      if (loginSuccess) {
-        history.push('/home')
-      }
+      await login(email, password)
     }
   }
 
@@ -220,4 +210,4 @@ const mapDispatchToProps = dispatch => {
   }
 }
 
-export default connect(mapStateToProps, mapDispatchToProps)(UserAuth)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserAuth))
