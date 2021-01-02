@@ -1,11 +1,12 @@
 import {
-  SET_CURRENT_USER,
+  SET_AUTHENTICATED,
   SET_AUTHENTICATING,
   CLEAR_AUTHENTICATING,
   SET_ERROR,
-  CLEAR_ERROR
+  CLEAR_ERROR,
+  CLEAR_AUTHENTICATED
 } from './types'
-
+import history from '../../../history'
 import AuthService from '../services/auth.service'
 
 export const login = (email, password) => async (dispatch) => {
@@ -16,9 +17,12 @@ export const login = (email, password) => async (dispatch) => {
   try {
     const token = await AuthService.login(email, password)
     dispatch({
-      type: SET_CURRENT_USER,
+      type: SET_AUTHENTICATED,
       payload: token
     })
+
+    // Go to home page
+    history.push('/home')
 
     return true
   } catch (error) {
@@ -45,6 +49,9 @@ export const signup = (email, username, password) => async (dispatch) => {
   try {
     await AuthService.signup(email, username, password)
 
+    // Go to login page
+    history.push('/login')
+
     return true
   } catch (error) {
     dispatch({
@@ -60,6 +67,13 @@ export const signup = (email, username, password) => async (dispatch) => {
     dispatch({ type: CLEAR_AUTHENTICATING })
   }
 
+}
+
+export const logout = () => (dispatch) => {
+
+  dispatch({ type: CLEAR_AUTHENTICATED })
+
+  AuthService.logout()
 }
 
 export const clearError = () => ({
