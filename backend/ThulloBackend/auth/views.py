@@ -1,7 +1,8 @@
 from rest_framework import status
+from rest_framework.permissions import AllowAny
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
-from rest_framework.decorators import action
+from rest_framework.decorators import action, permission_classes
 from rest_framework_simplejwt.views import TokenObtainPairView
 from rest_framework_simplejwt.exceptions import TokenError, InvalidToken
 
@@ -14,7 +15,7 @@ class UserSignUpViewSet(ModelViewSet):
   """
   serializer_class = UserSerializer
 
-  @action(methods=['post'], detail=False)
+  @action(permission_classes=[AllowAny], methods=['post'], detail=False)
   def signup(self, request, pk=None):
     serializer = UserSerializer(data=request.data)
 
