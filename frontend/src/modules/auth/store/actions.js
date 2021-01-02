@@ -15,11 +15,8 @@ export const login = (email, password) => async (dispatch) => {
   dispatch({ type: CLEAR_ERROR })
 
   try {
-    const token = await AuthService.login(email, password)
-    dispatch({
-      type: SET_AUTHENTICATED,
-      payload: token
-    })
+    await AuthService.login(email, password)
+    dispatch({ type: SET_AUTHENTICATED })
 
     // Go to home page
     history.push('/home')
@@ -71,9 +68,30 @@ export const signup = (email, username, password) => async (dispatch) => {
 
 export const logout = () => (dispatch) => {
 
+  AuthService.logout()
   dispatch({ type: CLEAR_AUTHENTICATED })
 
-  AuthService.logout()
+  // Go to login page
+  history.push('/login')
+}
+
+export const refreshToken = () => async (dispatch) => {
+
+  dispatch({ type: SET_AUTHENTICATING })
+  dispatch({ type: CLEAR_ERROR })
+
+  try {
+    await AuthService.refreshToken()
+    dispatch({ type: SET_AUTHENTICATED })
+
+    return true
+  } catch (error) {
+    // No need to set and display error. Just throw
+    throw error
+  } finally {
+    dispatch({ type: CLEAR_AUTHENTICATING })
+  }
+
 }
 
 export const clearError = () => ({
