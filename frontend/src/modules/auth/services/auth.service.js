@@ -11,12 +11,7 @@ class AuthenticationError extends ThulloErrorHandler {
 }
 
 const AuthService = {
-  /**
-   * Login the user then stores the access and refresh token
-   * 
-   * @returns access_token, refresh_token
-   * @throws AuthenticationError
-   */
+
   login: async function (email, password) {
 
     try {
@@ -29,6 +24,10 @@ const AuthService = {
       TokenService.saveAccessToken(response.data.access)
       // Save refresh token to localStorage
       TokenService.saveRefreshToken(response.data.refresh)
+      // Mount 401 Interceptor
+      ApiService.mount401Interceptor()
+      // Set auth header
+      ApiService.setAuthHeader()
 
       return response.data.access
     } catch (error) {
@@ -51,7 +50,40 @@ const AuthService = {
       throw new AuthenticationError(error.response)
     }
 
-  }
+  },
+
+  refreshToken: async function () {
+    const refreshToken = TokenService.getRefreshToken()
+
+    try {
+      const response = await ApiService.post('/auth/refresh/', {
+        refresh: refreshToken
+      })
+
+      // Save new access token
+      TokenService.saveAccessToken(response.data.access)
+
+      // Update the authentication header
+      ApiService.setAuthHeader()
+
+      return response.data.access
+    } catch (error) {
+      throw new AuthenticationError(error.response)
+    }
+  },
+
+  logout: function () {
+    // Remove access token from localStorage
+    TokenService.removeAccessToken()
+    // Remove refresh token from localStorage
+    TokenService.removeRefreshToken()
+    // Unmount 401 interceptor
+    ApiService.unmount401Interceptor()
+    // Remove authentication header
+    ApiService.removeHeader()
+  },
+
+
 
 }
 
