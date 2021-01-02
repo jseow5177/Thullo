@@ -1,6 +1,5 @@
 from rest_framework import serializers
 from rest_framework_simplejwt.serializers import TokenObtainSerializer, TokenObtainPairSerializer
-from rest_framework_simplejwt.tokens import RefreshToken
 from django.core.exceptions import ValidationError
 
 from auth.models import User
