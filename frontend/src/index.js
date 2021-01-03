@@ -4,8 +4,10 @@ import './assets/styles/global.scss'
 import App from './App'
 
 ReactDOM.render(
-  <React.StrictMode>
-    <App />
-  </React.StrictMode>,
+  // Temporarily remove StrictMode due to 
+  // <React.StrictMode>
+  //   <App />
+  // </React.StrictMode>,
+  <App />,
   document.getElementById('root')
 )
