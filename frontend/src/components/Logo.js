@@ -1,4 +1,5 @@
 import React from 'react'
+import PropTypes from 'prop-types'
 
 import LogoOnly from '../assets/image/logo_only.png'
 import TextOnly from '../assets/image/text_only.png'
@@ -22,6 +23,16 @@ function Logo({ size, variant }) {
   return (
     <img src={imgSrc()} alt="logo" style={{ width: `${size}` }} />
   )
+}
+
+Logo.defaultProps = {
+  size: '50px',
+  variant: 'text-and-logo'
+}
+
+Logo.propTypes = {
+  size: PropTypes.string,
+  variant: PropTypes.string,
 }
 
 export default Logo
