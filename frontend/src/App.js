@@ -9,7 +9,7 @@ import history from './history'
 import RouteWrapper from './components/RouteWrapper'
 
 // Layouts
-import MainLayout from './components/Layout/MainLayout'
+import MainLayout from './components/Layout/MainLayout/'
 import LandingLayout from './components/Layout/LandingLayout'
 import AuthLayout from './components/Layout/AuthLayout/'
 
