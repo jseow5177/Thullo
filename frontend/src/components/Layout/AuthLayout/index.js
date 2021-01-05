@@ -20,17 +20,19 @@ function AuthLayout({ children, auth }) {
   }, [auth.isAuthenticated])
 
   const render = () => {
-    if (isInitialised && redirectPath) {
-      return <Redirect to={redirectPath} />
-    } else if (isInitialised && redirectPath === null) {
-      return (
-        <>
-          <AuthHeader />
-          {children}
-        </>
-      )
-    } else {
+    if (!isInitialised) {
       return <CircularProgress size={50} className={styles.spinner} />
+    } else {
+      if (redirectPath === null) {
+        return (
+          <>
+            <AuthHeader />
+            {children}
+          </>
+        )
+      } else {
+        return <Redirect to={redirectPath} />
+      }
     }
   }
 
