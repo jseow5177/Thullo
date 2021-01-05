@@ -73,6 +73,8 @@ export const logout = () => (dispatch) => {
 
   // Go to login page
   history.push('/login')
+
+  return true
 }
 
 export const refreshToken = () => async (dispatch) => {
