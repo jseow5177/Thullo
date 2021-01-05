@@ -4,12 +4,17 @@
   justify-content: space-between;
   padding: 0.2rem;
 
-  .logoBtn {
+  .iconBtn {
     padding: 0px;
 
     &:hover {
       background-color: white;
     }
+  }
+
+  .logoBtn {
+    @extend .iconBtn;
+    margin-right: 2rem;
   }
 
   .leftComponents {

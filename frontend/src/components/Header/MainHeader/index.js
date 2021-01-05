@@ -14,15 +14,20 @@ import SearchBar from '../../SearchBar'
 import styles from './MainHeader.module.scss'
 
 function MainHeader() {
+
+  // Set the anchor of menu dropdown
   const [menuAnchor, setMenuAnchor] = useState(null)
   const isMenuOpen = Boolean(menuAnchor)
 
+  // Search keyword entered by user
   const [keyword, setSearchKeyword] = useState('')
 
+  // Set anchor when menu is open
   const handleMenuOpen = (e) => {
     setMenuAnchor(e.currentTarget)
   }
 
+  // Remove anchor when menu is close
   const handleMenuClose = () => {
     setMenuAnchor(null)
   }
@@ -31,7 +36,7 @@ function MainHeader() {
     <AppBar position="static" elevation={1}>
       <Toolbar className={styles.toolbar}>
         <div className={styles.leftComponents}>
-          <IconButton className={styles.logoBtn} edge="start">
+          <IconButton className={styles.logoBtn}>
             <Logo size="40px" variant="logo-only" />
             <Logo size="70px" variant="text-only" />
           </IconButton>
@@ -42,7 +47,7 @@ function MainHeader() {
         </div>
         <div>
           <IconButton
-            className={styles.logoBtn}
+            className={styles.iconBtn}
             onClick={handleMenuOpen}>
             <Avatar>JS</Avatar>
           </IconButton>
