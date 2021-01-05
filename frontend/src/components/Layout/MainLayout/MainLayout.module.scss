@@ -1,0 +1,9 @@
+@import '../../../assets/styles/colors.scss';
+
+.layout {
+  height: 100vh;
+  background-color: $auth-layout-background;
+  overflow: auto;
+  position: relative;
+  box-sizing: border-box;
+}
