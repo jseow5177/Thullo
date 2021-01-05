@@ -1,0 +1,20 @@
+.toolbar {
+  background-color: white;
+  display: flex;
+  justify-content: space-between;
+  padding: 0.2rem;
+
+  .logoBtn {
+    padding: 0px;
+
+    &:hover {
+      background-color: white;
+    }
+  }
+
+  .leftComponents {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+}
