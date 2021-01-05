@@ -1,0 +1,43 @@
+@import '../../assets/styles/colors.scss';
+
+.root {
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0.8rem;
+  height: 1.5rem;
+  margin-left: 2rem;
+}
+
+.inputExpansionAnimation {
+  transition: width 0.3s ease;
+}
+
+.expandedPaper {
+  background-color: white;
+  @extend .root;
+
+  .closeIcon {
+    color: $dim-gray;
+    cursor: pointer;
+  }
+}
+
+.shrinkPaper {
+  background-color: $light-blue !important;
+  @extend .root;
+
+  .searchIcon {
+    color: white;
+    cursor: pointer;
+  }
+}
+
+.expandedInput {
+  width: 13rem;
+  @extend .inputExpansionAnimation;
+}
+
+.shrinkInput {
+  width: 8rem;
+  @extend .inputExpansionAnimation;
+}
