@@ -91,14 +91,25 @@ const FormField = forwardRef(({
   )
 })
 
+FormField.defaultProps = {
+  type: 'text',
+  placeholder: '',
+  hideLabel: false,
+  required: false,
+  children: null,
+  validator: null,
+  startIcon: null,
+  endIcon: null
+}
+
 FormField.propTypes = {
-  type: PropTypes.string.isRequired,
   fieldId: PropTypes.string.isRequired,
   label: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onValueChanged: PropTypes.func.isRequired,
   errors: PropTypes.array.isRequired,
   setErrors: PropTypes.func.isRequired,
+  type: PropTypes.string,
   placeholder: PropTypes.string,
   hideLabel: PropTypes.bool,
   required: PropTypes.bool,
