@@ -3,6 +3,7 @@ import PropTypes from 'prop-types'
 
 import Paper from '@material-ui/core/Paper'
 import InputBase from '@material-ui/core/InputBase'
+import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 
 import SearchIcon from '@material-ui/icons/Search'
 import CloseIcon from '@material-ui/icons/Close'
@@ -39,20 +40,21 @@ function SearchBar({ keyword, onKeywordChange, search }) {
   }
 
   return (
-    <Paper
-      elevation={searchBarExpanded ? 8 : 3}
-      className={`${searchBarExpanded ? styles.expandedPaper : styles.shrinkPaper}`}
-      onClick={expandSearchBar}
-    >
-      <InputBase
-        inputRef={inputRef}
-        value={keyword}
-        onChange={handleChange}
-        onBlur={shrinkSearchBar}
-        className={`${searchBarExpanded ? styles.expandedInput : styles.shrinkInput}`}
-      />
-      {iconToRender()}
-    </Paper >
+    <ClickAwayListener onClickAway={shrinkSearchBar}>
+      <Paper
+        elevation={searchBarExpanded ? 8 : 3}
+        className={`${searchBarExpanded ? styles.expandedPaper : styles.shrinkPaper}`}
+        onClick={expandSearchBar}
+      >
+        <InputBase
+          inputRef={inputRef}
+          value={keyword}
+          onChange={handleChange}
+          className={`${searchBarExpanded ? styles.expandedInput : styles.shrinkInput}`}
+          endAdornment={iconToRender()}
+        />
+      </Paper >
+    </ClickAwayListener>
   )
 }
 

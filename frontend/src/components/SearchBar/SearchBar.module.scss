@@ -3,9 +3,11 @@
 .root {
   display: flex;
   align-items: center;
-  padding: 0.5rem 0.8rem;
-  height: 1.5rem;
-  margin-left: 2rem;
+  padding: 0;
+}
+
+.searchInput {
+  padding: 0.2rem 0.8rem;
 }
 
 .inputExpansionAnimation {
@@ -13,8 +15,8 @@
 }
 
 .expandedPaper {
-  background-color: white;
   @extend .root;
+  background-color: white;
 
   .closeIcon {
     color: $dim-gray;
@@ -23,8 +25,8 @@
 }
 
 .shrinkPaper {
-  background-color: $light-blue !important;
   @extend .root;
+  background-color: $light-blue !important;
 
   .searchIcon {
     color: white;
@@ -33,11 +35,13 @@
 }
 
 .expandedInput {
-  width: 13rem;
   @extend .inputExpansionAnimation;
+  @extend .searchInput;
+  width: 15rem;
 }
 
 .shrinkInput {
-  width: 8rem;
   @extend .inputExpansionAnimation;
+  @extend .searchInput;
+  width: 10rem;
 }
