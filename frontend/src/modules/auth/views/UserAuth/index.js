@@ -193,12 +193,10 @@ const mapStateToProps = state => ({
   auth: state.auth
 })
 
-const mapDispatchToProps = dispatch => {
-  return {
-    login: (email, password) => dispatch(login(email, password)),
-    signup: (email, username, password) => dispatch(signup(email, username, password)),
-    clearError: () => dispatch(clearError())
-  }
-}
+const mapDispatchToProps = dispatch => ({
+  login: (email, password) => dispatch(login(email, password)),
+  signup: (email, username, password) => dispatch(signup(email, username, password)),
+  clearError: () => dispatch(clearError())
+})
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(UserAuth))
