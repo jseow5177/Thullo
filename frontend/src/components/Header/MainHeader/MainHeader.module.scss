@@ -4,22 +4,22 @@
   justify-content: space-between;
   padding: 0.2rem;
 
+  .leftComponents {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    .logoBtn {
+      @extend .iconBtn;
+      margin-right: 2rem;
+    }
+  }
+
   .iconBtn {
     padding: 0px;
 
     &:hover {
       background-color: white;
     }
-  }
-
-  .logoBtn {
-    @extend .iconBtn;
-    margin-right: 2rem;
-  }
-
-  .leftComponents {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
   }
 }

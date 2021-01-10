@@ -13,6 +13,13 @@ import SearchBar from '../../SearchBar'
 
 import styles from './MainHeader.module.scss'
 
+const HomeLogo = () => (
+  <>
+    <Logo size="40px" variant="logo-only" />
+    <Logo size="70px" variant="text-only" />
+  </>
+)
+
 function MainHeader() {
 
   // Set the anchor of menu dropdown
@@ -37,8 +44,7 @@ function MainHeader() {
       <Toolbar className={styles.toolbar}>
         <div className={styles.leftComponents}>
           <IconButton className={styles.logoBtn}>
-            <Logo size="40px" variant="logo-only" />
-            <Logo size="70px" variant="text-only" />
+            <HomeLogo />
           </IconButton>
           <SearchBar
             keyword={keyword}
