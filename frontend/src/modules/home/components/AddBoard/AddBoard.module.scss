@@ -1,0 +1,41 @@
+.root {
+  width: 25rem; // Card width
+  margin: 0 auto; // Center card horizontally
+
+  .header {
+    padding-bottom: 0;
+  }
+
+  .actions {
+    padding: 0.5rem 16px;
+    display: flex;
+    justify-content: space-between;
+  
+    .btn {
+      &:nth-child(1) {
+        margin-right: 0.25rem;
+      }
+
+      &:nth-child(2) {
+        margin-left: 0.25rem;
+      }
+    }
+
+    .iconBtn {
+      padding: 0;
+
+      &:nth-child(2) {
+        margin: 0 0.8rem;
+      }
+    }
+  }
+
+  .titleInput {
+    @extend .input;
+    font-weight: 600;
+  }
+
+  .input {
+    width: 100%;
+  }
+}
