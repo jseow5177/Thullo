@@ -9,6 +9,13 @@ import {
 import history from '../../../history'
 import AuthService from '../services/auth.service'
 
+/**
+ * Log in user.
+ * Redirects user to home page if log in successful.
+ * 
+ * @param {String} email Email in valid format provided by user
+ * @param {String} password Password provided by user
+ */
 export const login = (email, password) => async (dispatch) => {
 
   dispatch({ type: SET_AUTHENTICATING })
@@ -38,6 +45,14 @@ export const login = (email, password) => async (dispatch) => {
 
 }
 
+/**
+ * Sign up user.
+ * Redirects user to log in page if sign up is successful.
+ * 
+ * @param {String} email Email in valid format provided by user.
+ * @param {String} username Valid username provided by user.
+ * @param {String} password Valid password with acceptable strength provided by user.
+ */
 export const signup = (email, username, password) => async (dispatch) => {
 
   dispatch({ type: SET_AUTHENTICATING })
@@ -66,6 +81,9 @@ export const signup = (email, username, password) => async (dispatch) => {
 
 }
 
+/**
+ * Log user out from the application.
+ */
 export const logout = () => (dispatch) => {
 
   AuthService.logout()
@@ -77,6 +95,9 @@ export const logout = () => (dispatch) => {
   return true
 }
 
+/**
+ * Request for new access token via the refresh token.
+ */
 export const refreshToken = () => async (dispatch) => {
 
   dispatch({ type: SET_AUTHENTICATING })
@@ -88,7 +109,7 @@ export const refreshToken = () => async (dispatch) => {
 
     return true
   } catch (error) {
-    // No need to set and display error. Just throw
+    // No need to set and display error. Just throw.
     throw error
   } finally {
     dispatch({ type: CLEAR_AUTHENTICATING })
@@ -96,6 +117,9 @@ export const refreshToken = () => async (dispatch) => {
 
 }
 
+/**
+ * Clear all errors in auth redux store.
+ */
 export const clearError = () => ({
   type: CLEAR_ERROR
 })

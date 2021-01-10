@@ -13,6 +13,11 @@ function AuthLayout({ children, auth }) {
   const [redirectPath, setRedirectPath] = useState(null)
 
   useEffect(() => {
+    /**
+     * 1. On component mount, check if user is authenticated,
+     * 2. If authenticated, set redirectPath to /home
+     * 3. Initialise the component.
+     */
     if (auth.isAuthenticated) {
       setRedirectPath('/home')
     }
@@ -20,6 +25,11 @@ function AuthLayout({ children, auth }) {
   }, [auth.isAuthenticated])
 
   const render = () => {
+    /**
+     * If app is not initialised, show loading spinner.
+     * Else if no redirectPath (user not authenticated), renders log in / sign up page.
+     * Else if has redirectPath to /home, redirects user to /home.
+     */
     if (!isInitialised) {
       return <CircularProgress size={50} className={styles.spinner} />
     } else {
