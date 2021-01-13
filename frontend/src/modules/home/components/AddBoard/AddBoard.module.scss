@@ -1,3 +1,5 @@
+@import '../../../../assets/styles/colors.module.scss';
+
 .root {
   width: 25rem; // Card width
   margin: 0 auto; // Center card horizontally
@@ -21,10 +23,15 @@
       }
     }
 
-    .iconBtn {
-      padding: 0;
+    .icon {
+      cursor: pointer;
+      color: $dim-gray;
 
-      &:nth-child(2) {
+      &:hover {
+        color: darken($dim-gray, 20%);
+      }
+
+      &:nth-child(2) { // Add margin to the iconBtn in between
         margin: 0 0.8rem;
       }
     }

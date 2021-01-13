@@ -1,8 +1,26 @@
-.iconBtn {
-  padding: 0;
+@import '../../../../assets/styles/colors.module.scss';
 
+.paletteTitle {
+  margin: 0;
+  margin-bottom: 1px;
+  text-align: center;
+}
+
+.circleWrapper {
+  text-align: center;
+    
   .circle {
     width: 1.5rem;
     height: 1.5rem;
+    border: 2px solid transparent; // Border exists but transparent, then it wont push things around
+    cursor: pointer;
+
+    .tick {
+      color: $dim-gray;
+    }
+
+    &:hover {
+      border: 2px solid black;
+    }
   }
 }
