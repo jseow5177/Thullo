@@ -11,29 +11,27 @@ from auth.serializers import UserSerializer, CustomTokenObtainPairSerializer
 
 class UserSignUpViewSet(ModelViewSet):
   """
-  A viewset for User model
+  A viewset for User model to signup
   """
   serializer_class = UserSerializer
 
   @action(permission_classes=[AllowAny], methods=['post'], detail=False)
   def signup(self, request, pk=None):
-    serializer = UserSerializer(data=request.data)
+    # Use user serializer
+    serializer = self.get_serializer(data=request.data)
 
-    user_data = {
-      'email': request.data['email'],
-      'username': request.data['username'],
-      'password': request.data['password']
-    }
+    serializer.is_valid(raise_exception=True)
 
-    # serializer.is_valid will catch raised errors and return false if validation fails
-    if serializer.is_valid():
-      # Create user with custom user model
-      User.objects.create_user(**user_data)
-      return Response(status=status.HTTP_200_OK)
-      
-    return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    # Create user with custom user model
+    # Calling create_user will hash the password
+    User.objects.create_user(**request.data)
+
+    return Response(status=status.HTTP_200_OK)
 
 class EmailTokenObtainPairView(TokenObtainPairView):
+  """
+  A view set to handle user login
+  """
 
   serializer_class = CustomTokenObtainPairSerializer
   
