@@ -16,6 +16,8 @@ class UserManager(BaseUserManager):
 
     # Password will be hashed
     user.set_password(password)
+
+    # Save user. Errors will be thrown and returned within save()
     user.save(using=self._db)
 
     return user
