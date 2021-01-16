@@ -20,10 +20,9 @@ import Alert from '@material-ui/lab/Alert'
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
 import CardContent from '@material-ui/core/CardContent'
-import Button from '@material-ui/core/Button'
 import Link from '@material-ui/core/Link'
 import Typography from '@material-ui/core/Typography'
-import CircularProgress from '@material-ui/core/CircularProgress'
+import LoadingButton from '../../../../components/CustomMaterialUI/LoadingButton'
 
 // Material UI Icons
 import EmailIcon from '@material-ui/icons/Email'
@@ -166,18 +165,15 @@ function UserAuth({ auth, login, signup, clearError, history, location }) {
             endIcon={renderPasswordVisibilityIcon()}
             required={true}
           />
-          <Button
+          <LoadingButton
             variant="contained"
             color="primary"
             fullWidth={true}
             onClick={handleSubmit}
+            pending={auth.authenticating}
           >
-            {
-              auth.authenticating
-                ? <CircularProgress size={25} className={styles.spinner} />
-                : AUTH[activePath].btnText
-            }
-          </Button>
+            {AUTH[activePath].btnText}
+          </LoadingButton>
         </form>
         <Typography variant="body2" align="center">
           <Link href="" onClick={navigateTo}>
