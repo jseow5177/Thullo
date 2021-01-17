@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
 
 // Material UI Components
 import Card from '@material-ui/core/Card'
@@ -12,20 +12,38 @@ import InputBase from '@material-ui/core/InputBase'
 import Button from '@material-ui/core/Button'
 import Divider from '@material-ui/core/Divider'
 import CustomTooltip from '../../../../components/CustomMaterialUI/CustomTooltip'
+import LoadingButton from '../../../../components/CustomMaterialUI/LoadingButton'
+import SnackAlert from '../../../../components/CustomMaterialUI/SnackAlert'
 
 // Material UI Icons
 import PaletteIcon from '@material-ui/icons/Palette'
 import GroupAddIcon from '@material-ui/icons/GroupAdd'
 import InsertPhotoIcon from '@material-ui/icons/InsertPhoto'
 
+// All available board colors
+import boardColors from '../../../../assets/styles/colors.module.scss'
+
+import { addBoard } from '../../store/actions'
+
 import Image from '../../../../components/Image'
 import ColorPalette from '../ColorPalette'
 import styles from './AddBoard.module.scss'
 
-function AddBoard({ boardInfo, onBoardInfoChange, resetBoardInfo }) {
+function AddBoard({ addBoard, home }) {
 
+  const [boardInfo, setBoardInfo] = useState({
+    title: '',
+    about: '',
+    color: boardColors.Default,
+    image: ''
+  })
+  const [imagePreview, setImagePreview] = useState('')
   const [cardIsExpanded, setIsCardExpanded] = useState(false)
-  const [imagePreview, setImagePreview] = useState("")
+
+  const [snack, setSnack] = useState({
+    open: false,
+    message: ''
+  })
 
   const expandCard = () => {
     setIsCardExpanded(true)
@@ -33,37 +51,72 @@ function AddBoard({ boardInfo, onBoardInfoChange, resetBoardInfo }) {
 
   const shrinkCard = () => {
     setIsCardExpanded(false)
-    resetBoardInfo()
+    resetBoardInfo() // Clear board info
+    setImagePreview('') // Clear image preview
   }
 
   const handleTextChange = (e) => {
-    onBoardInfoChange({ ...boardInfo, [e.target.id]: e.target.value })
+    setBoardInfo({ ...boardInfo, [e.target.id]: e.target.value })
   }
 
   const handleColorChange = (color) => {
-    onBoardInfoChange({ ...boardInfo, color })
+    setBoardInfo({ ...boardInfo, color })
   }
 
   const handleImageUpload = (e) => {
     if (e.target.files.length) { // Only update when there is an upload
-      setImagePreview(URL.createObjectURL(e.target.files[0]))
+      const rawImage = e.target.files[0]
+      // Create in memory image link preview
+      setImagePreview(URL.createObjectURL(rawImage))
+      setBoardInfo({ ...boardInfo, image: rawImage })
     }
+  }
+
+  const resetBoardInfo = () => {
+    setBoardInfo({
+      title: '',
+      about: '',
+      color: boardColors.Default,
+      image: ''
+    })
+  }
+
+  const submitBoardInfo = async () => {
+    const boardFormData = new FormData()
+
+    boardFormData.append('title', boardInfo.title)
+    boardFormData.append('about', boardInfo.about)
+    boardFormData.append('color', boardInfo.color)
+    boardFormData.append('image', boardInfo.image)
+
+    await addBoard(boardFormData)
+
+    shrinkCard()
+
+    // TODO: Error handling
+    setSnack({
+      open: true,
+      message: 'Board successfully created!'
+    })
+  }
+
+  const closeSnack = () => {
+    setSnack({ open: false, message: '' })
   }
 
   const renderCardContent = () => {
     if (cardIsExpanded) {
       return (
         <>
-          {
-            imagePreview && <Image src={imagePreview} caption="User uploaded image" />
-          }
+          { imagePreview && <Image src={imagePreview} caption="User Uploaded Image" />}
           <CardHeader
-            id="title"
             title={
               <InputBase
+                id="title"
                 placeholder="Board Title"
                 className={styles.titleInput}
                 onChange={handleTextChange}
+                autoComplete="off"
               />
             }
             className={styles.header}
@@ -108,7 +161,7 @@ function AddBoard({ boardInfo, onBoardInfoChange, resetBoardInfo }) {
                 type="file"
                 id="image-upload-btn"
                 style={{ display: "none" }}
-                accept="image/*" // Accept image input
+                accept="image/jpeg,image/x-png" // Accept png and jpeg image input
                 onChange={handleImageUpload}
               />
             </div>
@@ -121,16 +174,19 @@ function AddBoard({ boardInfo, onBoardInfoChange, resetBoardInfo }) {
                 className={styles.btn}
                 onClick={shrinkCard}
               >
-                Cancel
+                Close
               </Button>
-              <Button
+              <LoadingButton
                 color="primary"
                 variant="contained"
                 size="small"
                 className={styles.btn}
+                pending={home.addBoardLoading}
+                disabled={boardInfo.title === ''}
+                onClick={submitBoardInfo}
               >
                 Create
-              </Button>
+              </LoadingButton>
             </div>
           </CardActions>
         </>
@@ -145,18 +201,29 @@ function AddBoard({ boardInfo, onBoardInfoChange, resetBoardInfo }) {
   }
 
   return (
-    <ClickAwayListener onClickAway={shrinkCard}>
-      <Card className={styles.root} style={{ backgroundColor: boardInfo.color }}>
-        {renderCardContent()}
-      </Card>
-    </ClickAwayListener>
+    <>
+      <ClickAwayListener onClickAway={shrinkCard}>
+        <Card className={styles.root} style={{ backgroundColor: boardInfo.color }}>
+          {renderCardContent()}
+        </Card>
+      </ClickAwayListener>
+      <SnackAlert
+        open={snack.open}
+        message={snack.message}
+        severity="success"
+        closable
+        handleClose={closeSnack}
+      />
+    </>
   )
 }
 
-AddBoard.propTypes = {
-  boardInfo: PropTypes.object.isRequired,
-  onBoardInfoChange: PropTypes.func.isRequired,
-  resetBoardInfo: PropTypes.func.isRequired,
-}
+const mapStateToProps = (state) => ({
+  home: state.home
+})
 
-export default AddBoard
+const mapDispatchToProps = (dispatch) => ({
+  addBoard: (boardFormData) => dispatch(addBoard(boardFormData))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddBoard)
