@@ -12,15 +12,27 @@ class BoardViewSet(ModelViewSet):
 
   serializer_class = BoardSerializer
 
+  def get_queryset(self):
+    queryset = Board.objects.all()
+    return queryset
+
+  def list(self, request):
+    all_boards = self.get_queryset()
+    serializer = self.get_serializer(all_boards, many=True)
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+
   def create(self, request):
 
     current_user = request.user
+
+    # Read InMemoryFile as binary data
+    image_binary = request.data.get("image").read()
 
     board_data = {
       "title": request.data.get("title"),
       "about": request.data.get("about"),
       "color": request.data.get("color"),
-      "cover_photo": request.data.get("cover_photo"),
+      "image": image_binary,
       "owner": current_user.id # Add owner field
     }
 
@@ -29,6 +41,6 @@ class BoardViewSet(ModelViewSet):
     serializer.is_valid(raise_exception=True)
 
     # Save board. Errors will be thrown and returned within save()
-    instance = serializer.save()
+    serializer.save()
 
-    return Response(data=instance, status=status.HTTP_201_CREATED)
+    return Response(data=serializer.data, status=status.HTTP_201_CREATED)
