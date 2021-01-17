@@ -1,5 +1,6 @@
 const initialState = {
-  openCreateBoardModal: false,
+  boards: [],
+  addBoardLoading: false
 }
 
 export default initialState
