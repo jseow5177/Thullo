@@ -26,7 +26,11 @@ class BoardViewSet(ModelViewSet):
     current_user = request.user
 
     # Read InMemoryFile as binary data
-    image_binary = request.data.get("image").read()
+    image = request.data.get("image")
+    if (image == ''):
+      image_binary = b''
+    else:
+      image_binary = image.read()
 
     board_data = {
       "title": request.data.get("title"),
