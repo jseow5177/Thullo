@@ -1,9 +1,52 @@
-import React from 'react'
+import React, { useEffect } from 'react'
+import { connect } from 'react-redux'
+import { SortableContainer } from 'react-sortable-hoc'
+import arrayMove from 'array-move'
 
-function HomePage() {
+import AddBoard from '../../components/AddBoard'
+import Board from '../../components/Board'
+
+import { retrieveBoards, setBoards } from '../../store/actions'
+import styles from './HomePage.module.scss'
+
+const Container = SortableContainer(({ children }) => (
+  <div className={styles.root}>
+    {children}
+  </div>
+))
+
+function HomePage({ retrieveBoards, setBoards, home }) {
+
+  useEffect(() => {
+    retrieveBoards()
+  }, [retrieveBoards])
+
+  const handleDrag = ({ oldIndex, newIndex }) => {
+    const newBoards = arrayMove(home.boards, oldIndex, newIndex)
+    setBoards(newBoards)
+  }
+
   return (
-    <h1>You are at home!</h1>
+    <>
+      <AddBoard />
+      <Container axis="xy" onSortEnd={handleDrag} transitionDuration={300}>
+        {
+          home.boards.map((board, index) => (
+            <Board key={index} index={index} board={board} />
+          ))
+        }
+      </Container>
+    </>
   )
 }
 
-export default HomePage
+const mapStateToProps = (state) => ({
+  home: state.home
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  retrieveBoards: () => dispatch(retrieveBoards()),
+  setBoards: (boards) => dispatch(setBoards(boards))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(HomePage)
