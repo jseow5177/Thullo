@@ -1,6 +1,8 @@
 const initialState = {
   boards: [],
-  addBoardLoading: false
+  addBoardLoading: false,
+  getBoardsLoading: false,
+  error: null
 }
 
 export default initialState
