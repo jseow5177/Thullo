@@ -1,4 +1,13 @@
+import ThulloErrorHandler from '../../../common/errorHandler'
 import ApiService from '../../../common/services/api.service'
+
+class HomeError extends ThulloErrorHandler {
+  constructor(errorResponse) {
+    super(errorResponse)
+    this.resource = 'home'
+    this.name = this.constructor.name
+  }
+}
 
 const HomeService = {
 
@@ -8,7 +17,7 @@ const HomeService = {
 
       return response
     } catch (error) {
-      // TODO: Error handling
+      throw new HomeError(error.response)
     }
   },
 
@@ -17,8 +26,8 @@ const HomeService = {
       const response = await ApiService.get('/board/')
 
       return response
-    } catch (eror) {
-      // TODO: Error handling
+    } catch (error) {
+      throw new HomeError(error.response)
     }
   }
 
