@@ -1,7 +1,13 @@
 .root {
-  width: 15rem;
-  height: 8rem;
-  margin: 1rem;
-  display: flex;
-  flex-direction: column;
+  margin: 1rem 0.8rem; // Spacing between boards
+  flex: 0 0 21%;
+
+  .card {
+    width: 18rem;
+    margin: 0 auto;
+
+    &:hover {
+      box-shadow: inset;
+    }
+  }
 }
