@@ -9,7 +9,7 @@ import Board from '../../components/Board'
 import { retrieveBoards, setBoards } from '../../store/actions'
 import styles from './HomePage.module.scss'
 
-const Container = SortableContainer(({ children }) => (
+const Boards = SortableContainer(({ children }) => (
   <div className={styles.root}>
     {children}
   </div>
@@ -29,13 +29,13 @@ function HomePage({ retrieveBoards, setBoards, home }) {
   return (
     <>
       <AddBoard />
-      <Container axis="xy" onSortEnd={handleDrag} transitionDuration={300}>
+      <Boards axis="xy" onSortEnd={handleDrag} transitionDuration={300}>
         {
           home.boards.map((board, index) => (
             <Board key={index} index={index} board={board} />
           ))
         }
-      </Container>
+      </Boards>
     </>
   )
 }

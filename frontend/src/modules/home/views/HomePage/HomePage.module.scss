@@ -1,8 +1,7 @@
 .root {
-  width: 65rem;
-  margin: 2rem auto;
+  padding: 2rem 4rem; // Padding around boards
   display: flex;
   flex-wrap: wrap; // So that the boards wrap to the next row
-  overflow-y: auto; 
   justify-content: center;
+  overflow-y: hidden;
 }
