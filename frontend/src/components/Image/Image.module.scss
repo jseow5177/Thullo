@@ -1,7 +1,8 @@
 .image {
   display: block;
-  width: 100%;
-  height: auto;
+  width: 100%; // image width always take the full container
+  // The image will fill the height and width of box, while maintaining aspect ratio (may crop out image)
+  object-fit: cover;
   box-sizing: border-box;
   padding: 16px;
   padding-bottom: 0;

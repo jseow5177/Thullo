@@ -5,7 +5,7 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 
 import styles from './Image.module.scss'
 
-function Image({ src, caption }) {
+function Image({ src, caption, height }) {
 
   const [loaded, setLoaded] = useState(false)
 
@@ -19,14 +19,16 @@ function Image({ src, caption }) {
       <div style={{ display: loaded ? "none" : "block" }}>
         <LinearProgress color="primary" />
       </div>
-      <div style={{ display: loaded ? "block" : "none" }}>
-        <img
-          src={src}
-          onLoad={handleImageUploaded}
-          alt={caption}
-          className={styles.image}
-        />
-      </div>
+      <img
+        src={src}
+        onLoad={handleImageUploaded}
+        alt={caption}
+        className={styles.image}
+        style={{
+          display: loaded ? "block" : "none",
+          height: height
+        }}
+      />
     </>
   )
 
@@ -37,9 +39,14 @@ function Image({ src, caption }) {
   )
 }
 
+Image.defaultProps = {
+  height: 'auto'
+}
+
 Image.propTypes = {
   src: PropTypes.string.isRequired,
   caption: PropTypes.string.isRequired,
+  height: PropTypes.string,
 }
 
 export default Image
