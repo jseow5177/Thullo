@@ -29,6 +29,16 @@ const HomeService = {
     } catch (error) {
       throw new HomeError(error.response)
     }
+  },
+
+  switchOrder: async (boardIndex) => {
+    try {
+      const response = await ApiService.put('/board/switch_order/', boardIndex)
+
+      return response
+    } catch (error) {
+      throw new HomeError(error.response)
+    }
   }
 
 }

@@ -4,7 +4,7 @@ import {
   SET_ADD_BOARD_LOADING,
   CLEAR_ADD_BOARD_LOADING,
   SET_GET_BOARDS_LOADING,
-  CLEAR_GET_BOARDS_LOADING
+  CLEAR_GET_BOARDS_LOADING,
 } from './types'
 import HomeService from '../services/home.service'
 
@@ -42,6 +42,9 @@ export const retrieveBoards = () => async (dispatch) => {
   try {
     const res = await HomeService.retrieveBoards()
 
+    // Sort board by orders
+    res.data.sort((x, y) => (x.order > y.order) ? 1 : -1)
+
     dispatch({ type: ADD_BOARDS, payload: res.data })
 
     return true
@@ -61,4 +64,18 @@ export const retrieveBoards = () => async (dispatch) => {
  */
 export const setBoards = (boards) => {
   return { type: ORDER_BOARDS, payload: boards }
+}
+
+/**
+ * Switch the order of boards
+ * 
+ * Loading not required. Doesn't matter if failed to update backend as well
+ */
+export const switchOrder = (boardIndex) => async (_) => {
+  try {
+    await HomeService.switchOrder(boardIndex)
+  } catch (error) {
+    // TODO: Error handling
+    return false
+  }
 }
