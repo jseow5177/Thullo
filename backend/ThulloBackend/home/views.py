@@ -1,6 +1,9 @@
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
+from rest_framework.decorators import action
+
+from django.db.models import F
 
 from home.serializers import BoardSerializer
 from home.models import Board
@@ -17,9 +20,20 @@ class BoardViewSet(ModelViewSet):
     return queryset
 
   def list(self, request):
-    all_boards = self.get_queryset()
-    serializer = self.get_serializer(all_boards, many=True)
+    user_boards = self.get_queryset().filter(owner=request.user.id)
+    serializer = self.get_serializer(user_boards, many=True)
     return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+  @action(methods=['put'], detail=False)
+  def switch_order(self, request):
+    print(request.data)
+    boardId = request.data['board']
+    boardOrder = request.data['order']
+
+    Board.objects.filter(order__gte=boardOrder).update(order=F('order') + 1)
+    Board.objects.filter(pk=boardId).update(order=boardOrder)
+
+    return Response(status=status.HTTP_200_OK)
 
   def create(self, request):
 
@@ -37,7 +51,8 @@ class BoardViewSet(ModelViewSet):
       "about": request.data.get("about"),
       "color": request.data.get("color"),
       "image": image_binary,
-      "owner": current_user.id # Add owner field
+      "owner": current_user.id, # Add owner field
+      "order": request.data.get("order")
     }
 
     # Check if data is valid with serializer
