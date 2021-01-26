@@ -84,10 +84,13 @@ function AddBoard({ addBoard, home }) {
   const submitBoardInfo = async () => {
     const boardFormData = new FormData()
 
+    const lastBoard = home.boards[home.boards.length - 1]
+
     boardFormData.append('title', boardInfo.title)
     boardFormData.append('about', boardInfo.about)
     boardFormData.append('color', boardInfo.color)
     boardFormData.append('image', boardInfo.image)
+    boardFormData.append('order', lastBoard ? lastBoard.order + 1 : 1)
 
     await addBoard(boardFormData)
 
