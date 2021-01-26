@@ -6,7 +6,7 @@ import arrayMove from 'array-move'
 import AddBoard from '../../components/AddBoard'
 import Board from '../../components/Board'
 
-import { retrieveBoards, setBoards } from '../../store/actions'
+import { retrieveBoards, setBoards, switchOrder } from '../../store/actions'
 import styles from './HomePage.module.scss'
 
 const Boards = SortableContainer(({ children }) => (
@@ -15,15 +15,38 @@ const Boards = SortableContainer(({ children }) => (
   </div>
 ))
 
-function HomePage({ retrieveBoards, setBoards, home }) {
+function HomePage({ retrieveBoards, setBoards, switchOrder, home }) {
 
   useEffect(() => {
     retrieveBoards()
   }, [retrieveBoards])
 
-  const handleDrag = ({ oldIndex, newIndex }) => {
-    const newBoards = arrayMove(home.boards, oldIndex, newIndex)
-    setBoards(newBoards)
+  const handleDrag = async ({ oldIndex, newIndex }) => {
+    if (oldIndex !== newIndex) { // Do nothing when board is dropped at the same place
+      const newBoards = arrayMove(home.boards, oldIndex, newIndex)
+
+      const draggedBoard = newBoards[newIndex]
+
+      if (newIndex === newBoards.length - 1) { // Board is moved to the end
+        const secondLastBoard = newBoards[newIndex - 1]
+        draggedBoard.order = secondLastBoard.order + 1
+      } else { // Board is moved to anywhere in the middle
+        const boardAfter = newBoards[newIndex + 1]
+        draggedBoard.order = boardAfter.order
+      }
+
+      // Increment the orders of all board after
+      const allBoardsAfter = newBoards.splice(newIndex + 1)
+      allBoardsAfter.forEach(board => board.order += 1)
+
+      // await not required. Else will have lag will UI response
+      switchOrder({
+        board: draggedBoard.id,
+        order: draggedBoard.order
+      })
+
+      setBoards([...newBoards, ...allBoardsAfter])
+    }
   }
 
   return (
@@ -46,7 +69,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   retrieveBoards: () => dispatch(retrieveBoards()),
-  setBoards: (boards) => dispatch(setBoards(boards))
+  setBoards: (boards) => dispatch(setBoards(boards)),
+  switchOrder: (boardIndex) => dispatch(switchOrder(boardIndex))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(HomePage)
