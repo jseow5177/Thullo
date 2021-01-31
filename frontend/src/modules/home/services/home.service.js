@@ -1,11 +1,14 @@
-import ThulloErrorHandler from '../../../common/errorHandler'
+import ThulloError from '../../../common/error-handler'
 import ApiService from '../../../common/services/api.service'
 
-class HomeError extends ThulloErrorHandler {
-  constructor(errorResponse) {
-    super(errorResponse)
-    this.resource = 'home'
-    this.name = this.constructor.name
+class HomeError extends ThulloError {
+  constructor(statusCode, errorData) {
+    super(statusCode, errorData)
+    this.message = this.serializeError()
+  }
+
+  serializeError() {
+    return super.serializeError()
   }
 }
 
@@ -17,7 +20,7 @@ const HomeService = {
 
       return response
     } catch (error) {
-      throw new HomeError(error.response)
+      throw new HomeError(error.response.status, error.response.data)
     }
   },
 
@@ -27,7 +30,7 @@ const HomeService = {
 
       return response
     } catch (error) {
-      throw new HomeError(error.response)
+      throw new HomeError(error.response.status, error.response.data)
     }
   },
 
@@ -37,7 +40,8 @@ const HomeService = {
 
       return response
     } catch (error) {
-      throw new HomeError(error.response)
+      // No need to throw
+      console.error(error.response)
     }
   }
 

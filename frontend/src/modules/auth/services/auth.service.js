@@ -1,12 +1,15 @@
 import ApiService from '../../../common/services/api.service'
 import TokenService from '../../../common/services/token.service'
-import ThulloErrorHandler from '../../../common/errorHandler'
+import ThulloError from '../../../common/error-handler'
 
-class AuthenticationError extends ThulloErrorHandler {
-  constructor(errorResponse) {
-    super(errorResponse)
-    this.resource = 'user'
-    this.name = this.constructor.name
+class AuthenticationError extends ThulloError {
+  constructor(statusCode, errorData) {
+    super(statusCode, errorData)
+    this.message = this.serializeError()
+  }
+
+  serializeError() {
+    return super.serializeError()
   }
 }
 
@@ -31,7 +34,7 @@ const AuthService = {
 
       return response.data.access
     } catch (error) {
-      throw new AuthenticationError(error.response)
+      throw new AuthenticationError(error.response.status, error.response.data)
     }
 
   },
@@ -47,7 +50,7 @@ const AuthService = {
 
       return true
     } catch (error) {
-      throw new AuthenticationError(error.response)
+      throw new AuthenticationError(error.response.status, error.response.data)
     }
 
   },
@@ -68,7 +71,7 @@ const AuthService = {
 
       return response.data.access
     } catch (error) {
-      throw new AuthenticationError(error.response)
+      throw new AuthenticationError(error.response.status, error.response.data)
     }
   },
 
