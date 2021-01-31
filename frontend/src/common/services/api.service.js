@@ -10,6 +10,8 @@ const ApiService = {
   // Stores the 401 interceptor position so that it can later be ejected
   _401interceptor: null,
 
+  TokenErrors: ['token_not_valid', 'bad_authorization_header', 'authentication_failed'],
+
   setAuthHeader() {
     /**
      * Set default header which will be sent with every request
@@ -50,10 +52,11 @@ const ApiService = {
        * 1. If server responds with a 401 error, attempt to get new access token and resend original request
        * 2. If token refresh fails, proceed to logout
        */
-
       if (error.response && error.response.status === 401) {
         // If access token is invalid / expired
-        if (error.response.data.code === 'token_not_valid' && !error.config.url.includes('/auth/refresh')) {
+        if (ApiService.TokenErrors.includes(error.response.data[0].code)
+          && !error.config.url.includes('/auth/refresh')
+        ) {
           try {
             // Attempt to get new access token via refresh token
             await store.dispatch(refreshToken())
