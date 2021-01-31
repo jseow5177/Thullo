@@ -64,7 +64,8 @@ REST_FRAMEWORK = {
   ],
   'DEFAULT_PERMISSION_CLASSES': [
     'rest_framework.permissions.IsAuthenticated'
-  ]
+  ],
+  'EXCEPTION_HANDLER': 'ThulloBackend.error_handler.thullo_exception_handler'
 }
 
 ROOT_URLCONF = 'ThulloBackend.urls'
