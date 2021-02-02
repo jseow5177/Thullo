@@ -27,7 +27,7 @@ function AuthLayout({ children, auth }) {
   const render = () => {
     /**
      * If app is not initialised, show loading spinner.
-     * Else if no redirectPath (user not authenticated), renders log in / sign up page.
+     * Else if no redirectPath (user not authenticated), renders log in or sign up page.
      * Else if has redirectPath to /home, redirects user to /home.
      */
     if (!isInitialised) {

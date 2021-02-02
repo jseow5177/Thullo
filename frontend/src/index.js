@@ -4,7 +4,6 @@ import './assets/styles/global.scss'
 import App from './App'
 
 ReactDOM.render(
-  // Temporarily remove StrictMode due to 
   // <React.StrictMode>
   //   <App />
   // </React.StrictMode>,
