@@ -1,13 +1,13 @@
 class ThulloError extends Error {
 
-  constructor(statusCode, errorData) {
+  constructor(errorCode, errorData) {
     super()
-    this.statusCode = statusCode
+    this.errorCode = errorCode
     this.errorData = errorData
   }
 
   serializeError() {
-    switch (this.statusCode.toString()[0]) { // Check the first digit of status code
+    switch (this.errorCode.toString()[0]) { // Check the first digit of status code
       case '5': // 5xx error codes
         return 'Server error!'
       default:
