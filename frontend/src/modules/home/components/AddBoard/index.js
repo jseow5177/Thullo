@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
+import imageCompression from 'browser-image-compression'
 
 // Material UI Components
 import Card from '@material-ui/core/Card'
@@ -13,7 +14,6 @@ import Button from '@material-ui/core/Button'
 import Divider from '@material-ui/core/Divider'
 import CustomTooltip from '../../../../components/CustomMaterialUI/CustomTooltip'
 import LoadingButton from '../../../../components/CustomMaterialUI/LoadingButton'
-import SnackAlert from '../../../../components/CustomMaterialUI/SnackAlert'
 
 // Material UI Icons
 import PaletteIcon from '@material-ui/icons/Palette'
@@ -29,7 +29,7 @@ import Image from '../../../../components/Image'
 import ColorPalette from '../ColorPalette'
 import styles from './AddBoard.module.scss'
 
-function AddBoard({ addBoard, home }) {
+function AddBoard({ addBoard, setSnack, home }) {
 
   const [boardInfo, setBoardInfo] = useState({
     title: '',
@@ -39,11 +39,7 @@ function AddBoard({ addBoard, home }) {
   })
   const [imagePreview, setImagePreview] = useState('')
   const [cardIsExpanded, setIsCardExpanded] = useState(false)
-
-  const [snack, setSnack] = useState({
-    open: false,
-    message: ''
-  })
+  const [imageUploading, setImageUploading] = useState(false)
 
   const expandCard = () => {
     setIsCardExpanded(true)
@@ -63,12 +59,30 @@ function AddBoard({ addBoard, home }) {
     setBoardInfo({ ...boardInfo, color })
   }
 
-  const handleImageUpload = (e) => {
+  const handleImageUpload = async (e) => {
     if (e.target.files.length) { // Only update when there is an upload
       const rawImage = e.target.files[0]
-      // Create in memory image link preview
-      setImagePreview(URL.createObjectURL(rawImage))
-      setBoardInfo({ ...boardInfo, image: rawImage })
+
+      const options = {
+        maxSizeMB: 0.5, // Restrict image to be lower than 500kb
+        useWebWorker: true
+      }
+
+      try {
+        setImageUploading(true)
+        const compressedImage = await imageCompression(rawImage, options)
+        // Create in memory image link preview
+        setImagePreview(URL.createObjectURL(compressedImage))
+        setBoardInfo({ ...boardInfo, image: compressedImage })
+      } catch (err) {
+        setSnack({
+          open: true,
+          message: 'Image upload fails. Please try again',
+          severity: 'error'
+        })
+      } finally {
+        setImageUploading(false)
+      }
     }
   }
 
@@ -96,22 +110,20 @@ function AddBoard({ addBoard, home }) {
 
     shrinkCard()
 
-    // TODO: Error handling
-    setSnack({
-      open: true,
-      message: 'Board successfully created!'
-    })
-  }
-
-  const closeSnack = () => {
-    setSnack({ open: false, message: '' })
+    if (home.error === null) {
+      setSnack({
+        open: true,
+        message: 'Board successfully created',
+        severity: 'success'
+      })
+    }
   }
 
   const renderCardContent = () => {
     if (cardIsExpanded) {
       return (
         <>
-          { imagePreview && <Image src={imagePreview} caption="User Uploaded Image" />}
+          <Image src={imagePreview} caption="User Uploaded Image" uploading={imageUploading} />
           <CardHeader
             title={
               <InputBase
@@ -210,13 +222,6 @@ function AddBoard({ addBoard, home }) {
           {renderCardContent()}
         </Card>
       </ClickAwayListener>
-      <SnackAlert
-        open={snack.open}
-        message={snack.message}
-        severity="success"
-        closable
-        handleClose={closeSnack}
-      />
     </>
   )
 }
