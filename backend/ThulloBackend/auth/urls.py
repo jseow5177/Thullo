@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf.urls import include
 
 from rest_framework import routers
-from rest_framework_simplejwt.views import TokenRefreshView, TokenObtainPairView
+from rest_framework_simplejwt.views import TokenRefreshView
 
 from auth.views import UserSignUpViewSet, EmailTokenObtainPairView
 

@@ -22,15 +22,18 @@ class BoardViewSet(ModelViewSet):
   def list(self, request):
     user_boards = self.get_queryset().filter(owner=request.user.id)
     serializer = self.get_serializer(user_boards, many=True)
+
     return Response(data=serializer.data, status=status.HTTP_200_OK)
 
   @action(methods=['put'], detail=False)
   def switch_order(self, request):
-    print(request.data)
     boardId = request.data['board']
     boardOrder = request.data['order']
 
+    # Increment the order of boards after the dragged board
     Board.objects.filter(order__gte=boardOrder).update(order=F('order') + 1)
+
+    # Update order of board
     Board.objects.filter(pk=boardId).update(order=boardOrder)
 
     return Response(status=status.HTTP_200_OK)
