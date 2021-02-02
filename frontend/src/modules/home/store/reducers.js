@@ -4,7 +4,8 @@ import {
   SET_ADD_BOARD_LOADING,
   CLEAR_ADD_BOARD_LOADING,
   SET_GET_BOARDS_LOADING,
-  CLEAR_GET_BOARDS_LOADING
+  CLEAR_GET_BOARDS_LOADING,
+  SET_ERROR
 } from './types'
 import initialState from './state'
 
@@ -39,6 +40,14 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         getBoardsLoading: false
+      }
+    case SET_ERROR:
+      return {
+        ...state,
+        error: {
+          errorCode: action.payload.errorCode,
+          message: action.payload.message
+        }
       }
     default:
       return state
