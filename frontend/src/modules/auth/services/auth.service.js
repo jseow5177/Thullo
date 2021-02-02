@@ -3,8 +3,8 @@ import TokenService from '../../../common/services/token.service'
 import ThulloError from '../../../common/error-handler'
 
 class AuthenticationError extends ThulloError {
-  constructor(statusCode, errorData) {
-    super(statusCode, errorData)
+  constructor(errorCode, errorData) {
+    super(errorCode, errorData)
     this.message = this.serializeError()
   }
 
