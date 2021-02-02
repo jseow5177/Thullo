@@ -1,10 +1,12 @@
-import React, { useEffect } from 'react'
+import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { SortableContainer } from 'react-sortable-hoc'
 import arrayMove from 'array-move'
 
+// Material UI components
 import AddBoard from '../../components/AddBoard'
 import Board from '../../components/Board'
+import SnackAlert from '../../../../components/CustomMaterialUI/SnackAlert'
 
 import { retrieveBoards, setBoards, switchOrder } from '../../store/actions'
 import styles from './HomePage.module.scss'
@@ -17,9 +19,25 @@ const Boards = SortableContainer(({ children }) => (
 
 function HomePage({ retrieveBoards, setBoards, switchOrder, home }) {
 
+  const [snack, setSnack] = useState({
+    open: false,
+    message: '',
+    severity: 'error'
+  })
+
+  const closeSnack = () => {
+    setSnack({ open: false, message: '', severity: 'error' })
+  }
+
   useEffect(() => {
     retrieveBoards()
   }, [retrieveBoards])
+
+  useEffect(() => {
+    if (home.error !== null) {
+      setSnack({ open: true, message: home.error.message })
+    }
+  }, [home.error])
 
   const handleDrag = async ({ oldIndex, newIndex }) => {
     if (oldIndex !== newIndex) { // Do nothing when board is dropped at the same place
@@ -35,7 +53,7 @@ function HomePage({ retrieveBoards, setBoards, switchOrder, home }) {
         draggedBoard.order = boardAfter.order
       }
 
-      // Increment the orders of all board after
+      // Increment the orders of all board after dragged board
       const allBoardsAfter = newBoards.splice(newIndex + 1)
       allBoardsAfter.forEach(board => board.order += 1)
 
@@ -51,7 +69,7 @@ function HomePage({ retrieveBoards, setBoards, switchOrder, home }) {
 
   return (
     <>
-      <AddBoard />
+      <AddBoard setSnack={setSnack} />
       <Boards axis="xy" onSortEnd={handleDrag} transitionDuration={300}>
         {
           home.boards.map((board, index) => (
@@ -59,12 +77,19 @@ function HomePage({ retrieveBoards, setBoards, switchOrder, home }) {
           ))
         }
       </Boards>
+      <SnackAlert
+        open={snack.open}
+        message={snack.message}
+        severity={snack.severity}
+        closable={true}
+        handleClose={closeSnack}
+      />
     </>
   )
 }
 
 const mapStateToProps = (state) => ({
-  home: state.home
+  home: state.home,
 })
 
 const mapDispatchToProps = (dispatch) => ({
