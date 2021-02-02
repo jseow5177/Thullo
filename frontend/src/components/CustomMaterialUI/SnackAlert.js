@@ -3,11 +3,7 @@ import PropTypes from 'prop-types'
 
 // Material UI Components
 import Snackbar from '@material-ui/core/Snackbar'
-import IconButton from '@material-ui/core/IconButton'
 import MuiAlert from '@material-ui/lab/Alert'
-
-// Material UI Icons
-import CloseIcon from '@material-ui/icons/Close'
 
 const Alert = (props) => (
   <MuiAlert elevation={6} variant="filled" {...props} />
@@ -24,22 +20,21 @@ function SnackAlert({
   horizontalAnchor
 }) {
   return (
-    <Snackbar
-      open={open}
-      autoHideDuration={autoHideDuration}
-      anchorOrigin={{
-        vertical: verticalAnchor,
-        horizontal: horizontalAnchor
-      }}
-      onClose={handleClose}
-      action={
-        <IconButton size="small" color="inherit" onClick={handleClose}>
-          <CloseIcon fontSize="small" />
-        </IconButton>
+    <>
+      {
+        open &&
+        <Snackbar
+          open={open}
+          autoHideDuration={autoHideDuration}
+          anchorOrigin={{
+            vertical: verticalAnchor,
+            horizontal: horizontalAnchor
+          }}
+        >
+          <Alert onClose={closable ? handleClose : null} severity={severity}>{message}</Alert>
+        </Snackbar>
       }
-    >
-      <Alert onClose={handleClose} severity={severity}>{message}</Alert>
-    </Snackbar>
+    </>
   )
 }
 
