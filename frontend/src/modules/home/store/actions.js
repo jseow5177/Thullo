@@ -5,6 +5,7 @@ import {
   CLEAR_ADD_BOARD_LOADING,
   SET_GET_BOARDS_LOADING,
   CLEAR_GET_BOARDS_LOADING,
+  SET_ERROR
 } from './types'
 import HomeService from '../services/home.service'
 
@@ -24,7 +25,10 @@ export const addBoard = (boardInfo) => async (dispatch) => {
 
     return true
   } catch (error) {
-    // TODO: Error handling
+    dispatch({
+      type: SET_ERROR,
+      payload: error
+    })
     return false
   } finally {
     dispatch({ type: CLEAR_ADD_BOARD_LOADING })
@@ -49,7 +53,10 @@ export const retrieveBoards = () => async (dispatch) => {
 
     return true
   } catch (error) {
-    // TODO: Error handling
+    dispatch({
+      type: SET_ERROR,
+      payload: error
+    })
     return false
   } finally {
     dispatch({ type: CLEAR_GET_BOARDS_LOADING })
@@ -75,7 +82,7 @@ export const switchOrder = (boardIndex) => async (_) => {
   try {
     await HomeService.switchOrder(boardIndex)
   } catch (error) {
-    // TODO: Error handling
+    // No need to display error
     return false
   }
 }
