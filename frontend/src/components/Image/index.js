@@ -5,7 +5,7 @@ import LinearProgress from '@material-ui/core/LinearProgress'
 
 import styles from './Image.module.scss'
 
-function Image({ src, caption, height, uploading }) {
+function Image({ src, caption }) {
 
   const [loaded, setLoaded] = useState(false)
 
@@ -16,7 +16,7 @@ function Image({ src, caption, height, uploading }) {
   const renderImageComponent = () => (
     <>
       {/* Show progress bar when image is still uploading */}
-      <div style={{ display: uploading ? "block" : "none" }}>
+      <div style={{ display: !loaded ? "block" : "none" }}>
         <LinearProgress color="primary" />
       </div>
       <img
@@ -24,10 +24,7 @@ function Image({ src, caption, height, uploading }) {
         onLoad={handleImageUploaded}
         alt={caption}
         className={styles.image}
-        style={{
-          display: loaded ? "block" : "none",
-          height: height
-        }}
+        style={{ display: loaded ? "block" : "none" }}
       />
     </>
   )
@@ -39,16 +36,9 @@ function Image({ src, caption, height, uploading }) {
   )
 }
 
-Image.defaultProps = {
-  height: 'auto',
-  uploading: false
-}
-
 Image.propTypes = {
   src: PropTypes.string.isRequired,
-  caption: PropTypes.string.isRequired,
-  height: PropTypes.string,
-  uploading: PropTypes.bool,
+  caption: PropTypes.string.isRequired
 }
 
 export default Image
