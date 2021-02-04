@@ -35,11 +35,9 @@ const Board = SortableElement(({ board }) => {
         onMouseOver={handleMouseOver}
         onMouseOut={handleMouseOut}
       >
-        <Image
-          src={imgSrc}
-          caption="board img"
-          height="11rem"
-        />
+        <div className={styles.imgWrapper}>
+          <Image src={imgSrc} caption="board img" />
+        </div>
         <CardHeader
           title={
             <Typography variant="h5">

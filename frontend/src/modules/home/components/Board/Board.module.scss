@@ -7,6 +7,11 @@
     width: 18rem;
     margin: 0 auto;
 
+    .imgWrapper {
+      padding: 1rem;
+      padding-bottom: 0;
+    }
+
     &:hover {
       box-shadow: inset;
     }
