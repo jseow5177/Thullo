@@ -1,0 +1,29 @@
+@import '../../../../assets/styles/colors.module.scss';
+
+.root {
+
+  .cropper {
+    height: 15rem;
+    width: 30rem;
+    position: relative;
+  }
+
+  .controls {
+    display: flex;
+    flex-direction: column;
+
+    .sliderWrapper {
+      display: flex;
+      align-items: center;
+      margin-top: 0.4rem;
+
+      .label {
+        min-width: 65px;
+      }
+
+      .slider {
+        margin-left: 16px;
+      }
+    }
+  }
+}
