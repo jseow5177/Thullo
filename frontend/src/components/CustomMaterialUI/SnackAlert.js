@@ -30,8 +30,14 @@ function SnackAlert({
             vertical: verticalAnchor,
             horizontal: horizontalAnchor
           }}
+          onClose={closable ? handleClose : null} // Allow auto close
         >
-          <Alert onClose={closable ? handleClose : null} severity={severity}>{message}</Alert>
+          <Alert
+            severity={severity}
+            onClose={closable ? handleClose : null} // Allow close by icon
+          >
+            {message}
+          </Alert>
         </Snackbar>
       }
     </>
