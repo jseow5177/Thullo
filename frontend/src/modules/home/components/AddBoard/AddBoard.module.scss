@@ -1,10 +1,15 @@
 @import '../../../../assets/styles/colors.module.scss';
 
 .root {
-  width: 25rem; // Card width
+  width: 22rem; // Card width
   margin: 2rem auto 0 auto;
 
   .header {
+    padding-bottom: 0;
+  }
+
+  .imgWrapper {
+    padding: 1rem;
     padding-bottom: 0;
   }
 
