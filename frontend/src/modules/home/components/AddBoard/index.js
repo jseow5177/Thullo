@@ -1,6 +1,5 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
-import imageCompression from 'browser-image-compression'
 
 // Material UI Components
 import Card from '@material-ui/core/Card'
@@ -24,9 +23,9 @@ import InsertPhotoIcon from '@material-ui/icons/InsertPhoto'
 import boardColors from '../../../../assets/styles/colors.module.scss'
 
 import { addBoard } from '../../store/actions'
-
 import Image from '../../../../components/Image'
 import ColorPalette from '../ColorPalette'
+import ImageCropper from '../ImageCropper'
 import styles from './AddBoard.module.scss'
 
 function AddBoard({ addBoard, setSnack, home }) {
@@ -39,7 +38,15 @@ function AddBoard({ addBoard, setSnack, home }) {
   })
   const [imagePreview, setImagePreview] = useState('')
   const [cardIsExpanded, setIsCardExpanded] = useState(false)
-  const [imageUploading, setImageUploading] = useState(false)
+  const [isImageCropperOpen, setIsImageCropperOpen] = useState(false)
+
+  const openImageCropper = () => {
+    setIsImageCropperOpen(true)
+  }
+
+  const closeImageCropper = () => {
+    setIsImageCropperOpen(false)
+  }
 
   const expandCard = () => {
     setIsCardExpanded(true)
@@ -59,31 +66,9 @@ function AddBoard({ addBoard, setSnack, home }) {
     setBoardInfo({ ...boardInfo, color })
   }
 
-  const handleImageUpload = async (e) => {
-    if (e.target.files.length) { // Only update when there is an upload
-      const rawImage = e.target.files[0]
-
-      const options = {
-        maxSizeMB: 0.5, // Restrict image to be lower than 500kb
-        useWebWorker: true
-      }
-
-      try {
-        setImageUploading(true)
-        const compressedImage = await imageCompression(rawImage, options)
-        // Create in memory image link preview
-        setImagePreview(URL.createObjectURL(compressedImage))
-        setBoardInfo({ ...boardInfo, image: compressedImage })
-      } catch (err) {
-        setSnack({
-          open: true,
-          message: 'Image upload fails. Please try again',
-          severity: 'error'
-        })
-      } finally {
-        setImageUploading(false)
-      }
-    }
+  const handleCroppedImage = (imgSrc) => {
+    setImagePreview(URL.createObjectURL(imgSrc))
+    setBoardInfo({ ...boardInfo, image: imgSrc })
   }
 
   const resetBoardInfo = () => {
@@ -123,7 +108,12 @@ function AddBoard({ addBoard, setSnack, home }) {
     if (cardIsExpanded) {
       return (
         <>
-          <Image src={imagePreview} caption="User Uploaded Image" uploading={imageUploading} />
+          {
+            imagePreview &&
+            <div className={styles.imgWrapper}>
+              <Image src={imagePreview} caption="User Uploaded Image" />
+            </div>
+          }
           <CardHeader
             title={
               <InputBase
@@ -139,7 +129,7 @@ function AddBoard({ addBoard, setSnack, home }) {
           <CardContent>
             <InputBase
               id="about"
-              placeholder="Board About (max 200 characters)"
+              placeholder="Board About"
               className={styles.input}
               onChange={handleTextChange}
               multiline
@@ -148,8 +138,8 @@ function AddBoard({ addBoard, setSnack, home }) {
           </CardContent>
           <Divider />
           <CardActions className={styles.actions}>
-            {/* IconButtons: Change color, Collaborator and Add image */}
             <div>
+              {/* Change Color */}
               <CustomTooltip
                 title={
                   <ColorPalette
@@ -158,27 +148,21 @@ function AddBoard({ addBoard, setSnack, home }) {
                   />
                 }
                 width="8rem" // Custom width
-                interactive
+                interactive // Allows user to click on it
               >
                 <PaletteIcon className={styles.icon} />
               </CustomTooltip>
+              {/* Collaborator */}
               <CustomTooltip title="Collaborator">
                 <GroupAddIcon className={styles.icon} />
               </CustomTooltip>
+              {/* Image Upload */}
               <CustomTooltip title="Add image">
-                <label htmlFor="image-upload-btn">
-                  <InsertPhotoIcon
-                    className={styles.icon}
-                  />
-                </label>
+                <InsertPhotoIcon
+                  className={styles.icon}
+                  onClick={openImageCropper}
+                />
               </CustomTooltip>
-              <input
-                type="file"
-                id="image-upload-btn"
-                style={{ display: "none" }}
-                accept="image/jpeg,image/x-png" // Accept png and jpeg image input
-                onChange={handleImageUpload}
-              />
             </div>
             {/* Cancel and Create buttons */}
             <div>
@@ -220,6 +204,14 @@ function AddBoard({ addBoard, setSnack, home }) {
       <ClickAwayListener onClickAway={shrinkCard}>
         <Card className={styles.root} style={{ backgroundColor: boardInfo.color }}>
           {renderCardContent()}
+          {
+            isImageCropperOpen &&
+            <ImageCropper
+              open={isImageCropperOpen}
+              closeImageCropper={closeImageCropper}
+              handleCroppedImage={handleCroppedImage}
+            />
+          }
         </Card>
       </ClickAwayListener>
     </>
