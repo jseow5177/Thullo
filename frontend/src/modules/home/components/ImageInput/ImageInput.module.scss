@@ -1,0 +1,58 @@
+@import '../../../../assets/styles/colors.module.scss';
+
+// Padding change when drag image in and out
+.dragLeavePadding {
+  padding: 0rem;
+ }
+.dragEnterPadding {
+  padding: 0.5rem;
+}
+.dragEnterPadding, .dragLeavePadding {
+  transition: padding 0.1s linear;
+}
+
+// Color change when drag image in and out
+.dragLeaveColor {
+  background-color: $very-light-blue;
+}
+.dragEnterColor {
+  background-color: $auth-layout-background;
+}
+.dragEnterColor, .dragLeaveColor {
+  transition: background-color 0.1s linear;
+}
+
+.imageInputWrapper {
+  height: 15rem;
+  width: 30rem;
+  box-sizing: border-box;
+
+  .imageInputArea {
+    height: 100%;
+    width: 100%;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    border: 2px dashed $light-blue;
+    cursor: pointer;
+
+    .icon, .text {
+      pointer-events: none;
+    }
+
+    .icon {
+      width: 60px;
+      display: block;
+      margin-bottom: 10px;
+      fill: $dim-gray;
+    }
+
+    .text {
+      text-align: center;
+      margin: 0;
+      font-weight: 700;
+    }
+  }
+}
