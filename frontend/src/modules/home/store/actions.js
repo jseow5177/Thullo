@@ -1,6 +1,6 @@
 import {
-  ADD_BOARDS,
-  ORDER_BOARDS,
+  ADD_BOARD,
+  SET_BOARDS,
   SET_ADD_BOARD_LOADING,
   CLEAR_ADD_BOARD_LOADING,
   SET_GET_BOARDS_LOADING,
@@ -21,7 +21,7 @@ export const addBoard = (boardInfo) => async (dispatch) => {
   try {
     const res = await HomeService.addBoard(boardInfo)
 
-    dispatch({ type: ADD_BOARDS, payload: [res.data] })
+    dispatch({ type: ADD_BOARD, payload: res.data })
 
     return true
   } catch (error) {
@@ -49,7 +49,7 @@ export const retrieveBoards = () => async (dispatch) => {
     // Sort board by orders
     res.data.sort((x, y) => (x.order > y.order) ? 1 : -1)
 
-    dispatch({ type: ADD_BOARDS, payload: res.data })
+    dispatch({ type: SET_BOARDS, payload: res.data })
 
     return true
   } catch (error) {
@@ -70,7 +70,7 @@ export const retrieveBoards = () => async (dispatch) => {
  * @param {Array} boards The boards to be saved into store
  */
 export const setBoards = (boards) => {
-  return { type: ORDER_BOARDS, payload: boards }
+  return { type: SET_BOARDS, payload: boards }
 }
 
 /**

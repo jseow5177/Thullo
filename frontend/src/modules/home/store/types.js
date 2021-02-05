@@ -1,6 +1,6 @@
-export const ADD_BOARDS = 'ADD_BOARDS'
+export const SET_BOARDS = 'SET_BOARDS'
 
-export const ORDER_BOARDS = 'ORDER_BOARDS'
+export const ADD_BOARD = 'ADD_BOARD'
 
 export const SET_ADD_BOARD_LOADING = 'SET_ADD_BOARD_LOADING'
 

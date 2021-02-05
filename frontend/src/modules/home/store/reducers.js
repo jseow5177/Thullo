@@ -1,6 +1,6 @@
 import {
-  ADD_BOARDS,
-  ORDER_BOARDS,
+  ADD_BOARD,
+  SET_BOARDS,
   SET_ADD_BOARD_LOADING,
   CLEAR_ADD_BOARD_LOADING,
   SET_GET_BOARDS_LOADING,
@@ -11,12 +11,12 @@ import initialState from './state'
 
 const reducers = (state = initialState, action) => {
   switch (action.type) {
-    case ADD_BOARDS:
+    case ADD_BOARD:
       return {
         ...state,
-        boards: [...state.boards, ...action.payload]
+        boards: [...state.boards, action.payload]
       }
-    case ORDER_BOARDS:
+    case SET_BOARDS:
       return {
         ...state,
         boards: action.payload
