@@ -14,6 +14,8 @@ import Typography from '@material-ui/core/Typography'
 import SnackAlert from '../../../../components/CustomMaterialUI/SnackAlert'
 import LoadingButton from '../../../../components/CustomMaterialUI/LoadingButton'
 
+import DeleteIcon from '@material-ui/icons/Delete'
+
 import ImageInput from '../ImageInput'
 import styles from './ImageCropper.module.scss'
 import { getCroppedImage } from '../../utils'
@@ -61,16 +63,6 @@ function ImageCropper({ open, closeImageCropper, handleCroppedImage }) {
   const resetImageInputs = () => {
     setImage({ src: '', preview: null })
   }
-  // const resetSettings = () => {
-  //   setZoom(1)
-  //   setRotation(0)
-  // }
-
-  // const handleClose = () => {
-  //   resetImageInputs()
-  //   resetSettings()
-  //   closeImageCropper()
-  // }
 
   const cropImage = async () => {
     setProcessing(true)
@@ -93,9 +85,8 @@ function ImageCropper({ open, closeImageCropper, handleCroppedImage }) {
         message: 'Image crop fail. Please try again',
         severity: 'error'
       })
-      return false
-    } finally {
       setProcessing(false)
+      return false
     }
   }
 
@@ -112,6 +103,7 @@ function ImageCropper({ open, closeImageCropper, handleCroppedImage }) {
       return (
         <>
           <div className={styles.cropper}>
+            <DeleteIcon className={styles.icon} onClick={resetImageInputs} />
             <Cropper
               image={image.preview}
               crop={crop}
@@ -123,6 +115,7 @@ function ImageCropper({ open, closeImageCropper, handleCroppedImage }) {
               onRotationChange={setRotation}
               onCropChange={setCrop}
               onCropComplete={handleCropComplete}
+              restrictPosition={false}
             />
           </div>
           <div className={styles.controls}>
@@ -179,6 +172,7 @@ function ImageCropper({ open, closeImageCropper, handleCroppedImage }) {
             variant="contained"
             onClick={cropImage}
             pending={processing}
+            disabled={image.src === ''}
           >
             Done
           </LoadingButton>
