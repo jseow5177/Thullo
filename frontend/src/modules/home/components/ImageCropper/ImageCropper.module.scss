@@ -6,6 +6,20 @@
     height: 15rem;
     width: 30rem;
     position: relative;
+
+    .icon {
+      position: absolute;
+      z-index: 100;
+      cursor: pointer;
+      top: 0.2rem;
+      right: 0.2rem;
+      fill: $secondary-red;
+      transition: fill 0.2s ease;
+
+      &:hover {
+        fill: $dark-secondary-red;
+      }
+    }
   }
 
   .controls {
