@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
 
-import UploadIcon from '../../../../assets/icons/upload'
+import UploadIcon from '../../../../assets/svg/upload'
 
 import styles from './ImageInput.module.scss'
 
