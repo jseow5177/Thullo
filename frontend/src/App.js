@@ -17,6 +17,7 @@ import AuthLayout from './components/Layout/AuthLayout/'
 import Landing from './modules/auth/views/Landing/'
 import UserAuth from './modules/auth/views/UserAuth'
 import HomePage from './modules/home/views/HomePage'
+import BoardView from './modules/board/views/BoardView'
 
 // Token Service
 import TokenService from './common/services/token.service'
@@ -42,6 +43,7 @@ function App() {
     <Provider store={store}>
       <Router history={history}>
         <Switch>
+          <RouteWrapper exact path="/board/:id" component={BoardView} layout={MainLayout} />
           <RouteWrapper exact path="/home" component={HomePage} layout={MainLayout} />
           <RouteWrapper exact path={["/login", "/signup"]} isPrivate={false} component={UserAuth} layout={AuthLayout} />
           <RouteWrapper exact path="/" isPrivate={false} component={Landing} layout={LandingLayout} />
