@@ -1,0 +1,36 @@
+@import '../../../../assets/styles/colors.module.scss';
+
+.root {
+  display: flex;
+  width: 250px;
+  border-radius: 5px;
+  background-color: $light-black;
+  padding: 6px;
+  transition: background-color 0.1s linear;
+  cursor: pointer;
+  align-items: center;
+
+  .icon {
+    fill: $dim-gray;
+    margin-right: 0.2rem;
+  }
+
+  &:hover {
+    background-color: $dark-black;
+  }
+}
+
+.input {
+  background-color: $white;
+}
+
+.actions {
+  display: flex;
+  align-items: center;
+  margin-top: 6px;
+
+  .icon {
+    margin-left: 6px;
+    cursor: pointer;
+  }
+}
