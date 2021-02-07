@@ -3,15 +3,18 @@ import { combineReducers, createStore, applyMiddleware } from 'redux'
 
 import { authReducers, authState } from './modules/auth/store'
 import { homeReducers, homeState } from './modules/home/store'
+import { boardReducers, boardState } from './modules/board/store'
 
 const rootReducer = combineReducers({
   auth: authReducers,
-  home: homeReducers
+  home: homeReducers,
+  board: boardReducers
 })
 
 const initialState = {
   auth: authState,
-  home: homeState
+  home: homeState,
+  board: boardState
 }
 
 const middleware = [thunk]
