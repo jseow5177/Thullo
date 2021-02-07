@@ -2,8 +2,8 @@ import ThulloError from '../../../common/error-handler'
 import ApiService from '../../../common/services/api.service'
 
 class HomeError extends ThulloError {
-  constructor(statusCode, errorData) {
-    super(statusCode, errorData)
+  constructor(errorCode, errorData) {
+    super(errorCode, errorData)
     this.message = this.serializeError()
   }
 
@@ -40,8 +40,8 @@ const HomeService = {
 
       return response
     } catch (error) {
-      // No need to throw
-      console.error(error.response)
+      console.error(error)
+      throw new HomeError(error.response.status, error.response.data)
     }
   }
 
