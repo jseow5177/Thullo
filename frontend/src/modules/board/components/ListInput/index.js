@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
 import ClickAwayListener from '@material-ui/core/ClickAwayListener'
 import TextField from '@material-ui/core/TextField'
@@ -9,9 +11,12 @@ import AddIcon from '@material-ui/icons/Add'
 import CloseIcon from '@material-ui/icons/Close'
 
 import List from '../List'
+import { addList } from '../../store/actions'
 import styles from './ListInput.module.scss'
 
-function ListInput() {
+function ListInput({ match, addList }) {
+
+  const boardId = match.params.id
 
   const [listTitle, setListTitle] = useState('')
   const [isInputOpen, setIsInputOpen] = useState(false)
@@ -27,6 +32,10 @@ function ListInput() {
 
   const handleTextChange = (e) => {
     setListTitle(e.target.value)
+  }
+
+  const createList = async () => {
+    await addList({ board: boardId, title: listTitle })
   }
 
   const renderListInput = () => {
@@ -52,6 +61,8 @@ function ListInput() {
                   variant="contained"
                   color="primary"
                   size="small"
+                  disabled={listTitle === ''}
+                  onClick={createList}
                 >
                   Add List
                 </Button>
@@ -80,4 +91,8 @@ function ListInput() {
   )
 }
 
-export default ListInput
+const mapDispatchToProps = (dispatch) => ({
+  addList: (listInfo) => dispatch(addList(listInfo))
+})
+
+export default withRouter(connect(null, mapDispatchToProps)(ListInput))
