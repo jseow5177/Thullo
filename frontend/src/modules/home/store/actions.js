@@ -5,7 +5,8 @@ import {
   CLEAR_ADD_BOARD_LOADING,
   SET_GET_BOARDS_LOADING,
   CLEAR_GET_BOARDS_LOADING,
-  SET_ERROR
+  SET_HOME_ERROR,
+  CLEAR_HOME_ERROR
 } from './types'
 import HomeService from '../services/home.service'
 
@@ -16,6 +17,7 @@ import HomeService from '../services/home.service'
  */
 export const addBoard = (boardInfo) => async (dispatch) => {
 
+  dispatch({ type: CLEAR_HOME_ERROR })
   dispatch({ type: SET_ADD_BOARD_LOADING })
 
   try {
@@ -26,7 +28,7 @@ export const addBoard = (boardInfo) => async (dispatch) => {
     return true
   } catch (error) {
     dispatch({
-      type: SET_ERROR,
+      type: SET_HOME_ERROR,
       payload: error
     })
     return false
@@ -41,6 +43,7 @@ export const addBoard = (boardInfo) => async (dispatch) => {
  */
 export const retrieveBoards = () => async (dispatch) => {
 
+  dispatch({ type: CLEAR_HOME_ERROR })
   dispatch({ type: SET_GET_BOARDS_LOADING })
 
   try {
@@ -54,7 +57,7 @@ export const retrieveBoards = () => async (dispatch) => {
     return true
   } catch (error) {
     dispatch({
-      type: SET_ERROR,
+      type: SET_HOME_ERROR,
       payload: error
     })
     return false
