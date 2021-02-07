@@ -1,18 +1,24 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
 import ListInput from '../../components/ListInput'
 import SnackAlert from '../../../../components/CustomMaterialUI/SnackAlert'
 
+import { getLists } from '../../store/actions'
 import styles from './BoardView.module.scss'
 
-function BoardView({ board }) {
+function BoardView({ board, getLists, match }) {
 
   const [snack, setSnack] = useState({
     open: false,
     message: '',
     severity: 'error'
   })
+
+  useEffect(() => {
+    getLists(match.params.id)
+  }, [match.params.id, getLists])
 
   useEffect(() => {
     if (board.error !== null) {
@@ -43,7 +49,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-
+  getLists: (boardId) => dispatch(getLists(boardId))
 })
 
-export default connect(mapStateToProps, mapDispatchToProps)(BoardView)
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BoardView))
