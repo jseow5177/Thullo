@@ -1,7 +1,10 @@
 import {
   ADD_LIST,
+  SET_LISTS,
   SET_ADD_LIST_LOADING,
   CLEAR_ADD_LIST_LOADING,
+  SET_GET_LISTS_LOADING,
+  CLEAR_GET_LISTS_LOADING,
   SET_BOARD_ERROR,
   CLEAR_BOARD_ERROR
 } from './types'
@@ -14,6 +17,11 @@ const reducers = (state = initialState, action) => {
         ...state,
         lists: [...state.lists, action.payload]
       }
+    case SET_LISTS:
+      return {
+        ...state,
+        lists: action.payload
+      }
     case SET_ADD_LIST_LOADING:
       return {
         ...state,
@@ -23,6 +31,16 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         addListLoading: false
+      }
+    case SET_GET_LISTS_LOADING:
+      return {
+        ...state,
+        getListsLoading: true
+      }
+    case CLEAR_GET_LISTS_LOADING:
+      return {
+        ...state,
+        getListsLoading: false
       }
     case SET_BOARD_ERROR:
       return {

@@ -1,5 +1,7 @@
 export const ADD_LIST = 'ADD_LIST'
 
+export const SET_LISTS = 'SET_LISTS'
+
 export const SET_GET_LISTS_LOADING = 'SET_GET_LISTS_LOADING'
 
 export const CLEAR_GET_LISTS_LOADING = 'CLEAR_GET_LISTS_LOADING'
