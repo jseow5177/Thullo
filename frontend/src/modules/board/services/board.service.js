@@ -14,8 +14,14 @@ class BoardError extends ThulloError {
 
 const BoardService = {
 
-  getLists: async () => {
+  getLists: async (boardId) => {
+    try {
+      const response = await ApiService.get(`/list/?boardId=${boardId}`)
 
+      return response
+    } catch (error) {
+      throw new BoardError(error.response.status, error.response.data)
+    }
   },
 
   addList: async (listInfo) => {
