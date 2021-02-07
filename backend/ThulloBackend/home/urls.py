@@ -3,11 +3,10 @@ from django.conf.urls import include
 
 from rest_framework import routers
 
-from home.views import BoardViewSet
+from home.views import BoardViewSet, ListViewSet
 
 router = routers.DefaultRouter()
-router.register(r'', BoardViewSet, basename='board')
+router.register(r'board', BoardViewSet, basename='board')
+router.register(r'list', ListViewSet, basename='list')
 
-urlpatterns = [
-  path('', include(router.urls))
-]
+urlpatterns = router.urls
