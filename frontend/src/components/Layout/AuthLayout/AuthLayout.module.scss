@@ -1,12 +1,11 @@
 @import '../../../assets/styles/colors.module.scss';
 
 .layout {
-  height: 100vh;
+  height: 100%;
   background-color: $auth-layout-background;
   overflow: auto;
   position: relative;
   padding: 1.5rem;
-  box-sizing: border-box;
 
   .spinner {
     position: absolute;
