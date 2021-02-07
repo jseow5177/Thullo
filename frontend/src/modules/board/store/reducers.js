@@ -1,5 +1,6 @@
 import {
-  ADD_LIST
+  ADD_LIST,
+  SET_BOARD_ERROR
 } from './types'
 import initialState from './state'
 
@@ -9,6 +10,14 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         lists: [...state.lists, action.payload]
+      }
+    case SET_BOARD_ERROR:
+      return {
+        ...state,
+        error: {
+          errorCode: action.payload.errorCode,
+          message: action.payload.message
+        }
       }
     default:
       return state

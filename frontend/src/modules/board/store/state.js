@@ -1,6 +1,6 @@
 const initialState = {
   lists: [],
-  error: null
+  error: null,
 }
 
 export default initialState
