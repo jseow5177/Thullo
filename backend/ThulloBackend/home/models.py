@@ -14,5 +14,12 @@ class Board(models.Model):
   class Meta:
     verbose_name = "Board"
 
+class List(models.Model):
+  title = models.CharField(max_length=50, blank=False, null=False)
+  board = models.ForeignKey(Board, on_delete=models.CASCADE)
+
+  class Meta:
+    unique_together = ('title', 'board') # Titles must be unique in a board
+    verbose_name = "List"
 
 
