@@ -1,8 +1,8 @@
 import React, { forwardRef } from 'react'
 
-import styles from './List.module.scss'
+import styles from './BoardList.module.scss'
 
-const List = forwardRef(({ title, children, action }, ref) => (
+const BoardList = forwardRef(({ title, children, action }, ref) => (
   <div className={styles.root} ref={ref}>
     {title}
     {
@@ -12,4 +12,4 @@ const List = forwardRef(({ title, children, action }, ref) => (
   </div>
 ))
 
-export default List
+export default BoardList
