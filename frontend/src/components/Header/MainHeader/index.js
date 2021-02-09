@@ -40,7 +40,7 @@ function MainHeader() {
   }
 
   return (
-    <AppBar position="static" elevation={1}>
+    <AppBar position="relative" elevation={1}>
       <Toolbar className={styles.toolbar}>
         <div className={styles.leftComponents}>
           <IconButton className={styles.logoBtn}>
