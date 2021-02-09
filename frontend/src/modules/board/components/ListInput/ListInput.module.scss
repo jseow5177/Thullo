@@ -1,11 +1,10 @@
+@import '../../../../assets//styles/global.scss';
 @import '../../../../assets/styles/colors.module.scss';
 
-.root {
+.closedInput {
+  @extend .column;
   display: flex;
-  width: 250px;
-  border-radius: 5px;
   background-color: $light-black;
-  padding: 6px;
   transition: background-color 0.1s linear;
   cursor: pointer;
   align-items: center;
@@ -20,17 +19,22 @@
   }
 }
 
-.input {
-  background-color: $white;
-}
+.openedInput {
+  @extend .column;
+  background-color: $light-gray;
+  
+  .input {
+    background-color: $white;
+  }
 
-.actions {
-  display: flex;
-  align-items: center;
-  margin-top: 6px;
+  .actions {
+    display: flex;
+    align-items: center;
+    margin-top: 6px;
 
-  .icon {
-    margin-left: 6px;
-    cursor: pointer;
+    .icon {
+      margin-left: 6px;
+      cursor: pointer;
+    }
   }
 }
