@@ -1,4 +1,5 @@
 import React, { useState } from 'react'
+import NaturalDragAnimation from 'natural-drag-animation-rbdnd'
 import { Draggable } from 'react-beautiful-dnd'
 
 import Typography from '@material-ui/core/Typography'
@@ -12,18 +13,16 @@ import MoreVertIcon from '@material-ui/icons/MoreVert'
 
 import styles from './BoardList.module.scss'
 
-const ListWrapper = ({ provided, children }) => {
-  return (
-    <div
-      ref={provided.innerRef}
-      {...provided.draggableProps}
-      className={styles.root}
-    >
-      {children}
-    </div>
-  )
-}
-
+const ListWrapper = ({ provided, children, style }) => (
+  <div
+    ref={provided.innerRef}
+    {...provided.draggableProps}
+    className={styles.root}
+    style={style}
+  >
+    {children}
+  </div>
+)
 const ListTitle = ({ children, provided }) => (
   <div
     className={styles.listTitle}
@@ -49,35 +48,45 @@ const BoardList = ({ title, index }) => {
     <Draggable draggableId={title} index={index}>
       {
         (provided, snapshot) => (
-          <ListWrapper provided={provided}>
-            <ListTitle provided={provided}>
-              <Typography variant="overline" className={styles.text}>
-                {title}
-              </Typography>
-              <IconButton size="small" onClick={openPopover} className={styles.icon}>
-                <MoreVertIcon />
-              </IconButton>
-              <Popover
-                open={Boolean(anchorEl)}
-                anchorEl={anchorEl}
-                onClose={closePopover}
-                anchorOrigin={{
-                  vertical: "bottom",
-                  horizontal: "left"
-                }}
-                transformOrigin={{
-                  vertical: "top",
-                  horizontal: "left"
-                }}
-              >
-                <List dense>
-                  <ListItem button>
-                    <ListItemText primary="Delete list" />
-                  </ListItem>
-                </List>
-              </Popover>
-            </ListTitle>
-          </ListWrapper>
+          <NaturalDragAnimation
+            style={provided.draggableProps.style}
+            snapshot={snapshot}
+            rotationMultiplier={1} // Reduce rotation degree
+          >
+            {
+              style => (
+                <ListWrapper provided={provided} style={style}>
+                  <ListTitle provided={provided}>
+                    <Typography variant="overline" className={styles.text}>
+                      {title}
+                    </Typography>
+                    <IconButton size="small" onClick={openPopover} className={styles.icon}>
+                      <MoreVertIcon />
+                    </IconButton>
+                    <Popover
+                      open={Boolean(anchorEl)}
+                      anchorEl={anchorEl}
+                      onClose={closePopover}
+                      anchorOrigin={{
+                        vertical: "bottom",
+                        horizontal: "left"
+                      }}
+                      transformOrigin={{
+                        vertical: "top",
+                        horizontal: "left"
+                      }}
+                    >
+                      <List dense>
+                        <ListItem button>
+                          <ListItemText primary="Delete list" />
+                        </ListItem>
+                      </List>
+                    </Popover>
+                  </ListTitle>
+                </ListWrapper>
+              )
+            }
+          </NaturalDragAnimation>
         )
       }
     </Draggable>
