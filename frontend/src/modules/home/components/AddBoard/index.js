@@ -91,16 +91,15 @@ function AddBoard({ addBoard, setSnack, home }) {
     boardFormData.append('image', boardInfo.image)
     boardFormData.append('order', lastBoard ? lastBoard.order + 1 : 1)
 
-    await addBoard(boardFormData)
+    const success = await addBoard(boardFormData)
 
-    shrinkCard()
-
-    if (home.error === null) {
+    if (success) {
       setSnack({
         open: true,
         message: 'Board successfully created',
         severity: 'success'
       })
+      shrinkCard()
     }
   }
 
