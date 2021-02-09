@@ -1,14 +1,29 @@
 import React, { useState, useEffect } from 'react'
 import { connect } from 'react-redux'
 import { withRouter } from 'react-router-dom'
+import { DragDropContext, Droppable } from 'react-beautiful-dnd'
+import arrayMove from 'array-move'
 
+import BoardList from '../../components/BoardList'
 import ListInput from '../../components/ListInput'
 import SnackAlert from '../../../../components/CustomMaterialUI/SnackAlert'
 
-import { getLists } from '../../store/actions'
+// import MoreVertIcon from '@material-ui/icons/MoreVert'
+
+import { getLists, setLists } from '../../store/actions'
 import styles from './BoardView.module.scss'
 
-function BoardView({ board, getLists, match }) {
+const DroppableContainer = ({ children, provided }) => (
+  <div
+    {...provided.droppableProps}
+    ref={provided.innerRef}
+    className={styles.droppable}
+  >
+    {children}
+  </div>
+)
+
+function BoardView({ board, getLists, setLists, match }) {
 
   const [snack, setSnack] = useState({
     open: false,
@@ -30,9 +45,34 @@ function BoardView({ board, getLists, match }) {
     setSnack({ open: false, message: '', severity: 'error' })
   }
 
+  const handleDragEnd = ({ destination, source }) => {
+    const reorderedLists = arrayMove(board.lists, source.index, destination.index)
+    setLists(reorderedLists)
+  }
+
   return (
-    <div className={styles.root}>
-      <ListInput setSnack={setSnack} />
+    <>
+      <DragDropContext onDragEnd={handleDragEnd}>
+        <Droppable droppableId="board" direction="horizontal">
+          {
+            (provided => (
+              <DroppableContainer provided={provided}>
+                {
+                  board.lists.map((list, index) => (
+                    <BoardList
+                      key={list.id}
+                      title={list.title}
+                      index={index}
+                    />
+                  ))
+                }
+                {provided.placeholder}
+                <ListInput setSnack={setSnack} />
+              </DroppableContainer>
+            ))
+          }
+        </Droppable>
+      </DragDropContext>
       <SnackAlert
         open={snack.open}
         message={snack.message}
@@ -40,7 +80,7 @@ function BoardView({ board, getLists, match }) {
         handleClose={closeSnack}
         severity={snack.severity}
       />
-    </div>
+    </>
   )
 }
 
@@ -49,7 +89,8 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getLists: (boardId) => dispatch(getLists(boardId))
+  getLists: (boardId) => dispatch(getLists(boardId)),
+  setLists: (lists) => dispatch(setLists(lists))
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BoardView))
