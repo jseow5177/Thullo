@@ -7,18 +7,24 @@ import MainHeader from '../../Header/MainHeader'
 
 import styles from './MainLayout.module.scss'
 
-function MainLayout({ children, home }) {
+function MainLayout({ children, home, board }) {
   return (
     <div className={styles.layout}>
       <MainHeader />
-      {home.getBoardsLoading && <LinearProgress color="primary" />}
-      {children}
+      {
+        (home.getBoardsLoading || board.getListsLoading) &&
+        <LinearProgress color="primary" />
+      }
+      <div className={styles.childrenWrapper}>
+        {children}
+      </div>
     </div>
   )
 }
 
 const mapStateToProps = (state) => ({
-  home: state.home
+  home: state.home,
+  board: state.board
 })
 
 export default connect(mapStateToProps, null)(MainLayout)
