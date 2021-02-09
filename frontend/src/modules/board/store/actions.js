@@ -1,6 +1,7 @@
 import {
   ADD_LIST,
   SET_LISTS,
+  SET_LAST_ACTIVE_BOARD,
   SET_ADD_LIST_LOADING,
   CLEAR_ADD_LIST_LOADING,
   SET_GET_LISTS_LOADING,
@@ -10,14 +11,25 @@ import {
 } from './types'
 import BoardService from '../services/board.service'
 
-export const getLists = (boardId) => async (dispatch) => {
+/**
+ * Retrive the lists of a board
+ * 
+ * @param {String} boardId The id of viewed board
+ */
+export const getLists = (boardId) => async (dispatch, getState) => {
+
+  const lastViewedBoard = getState().board.lastActiveBoardId
 
   dispatch({ type: SET_GET_LISTS_LOADING })
 
   try {
-    const res = await BoardService.getLists(boardId)
+    // Only retrieve when the viewed board changes
+    if (lastViewedBoard !== boardId) {
+      const res = await BoardService.getLists(boardId)
 
-    dispatch({ type: SET_LISTS, payload: res.data })
+      dispatch({ type: SET_LISTS, payload: res.data })
+      dispatch({ type: SET_LAST_ACTIVE_BOARD, payload: boardId })
+    }
 
     return true
   } catch (error) {
@@ -32,6 +44,11 @@ export const getLists = (boardId) => async (dispatch) => {
 
 }
 
+/**
+ * Add a new list to the board
+ * 
+ * @param {Object} listInfo The list to be created. Has two fields: listTitle and boardId
+ */
 export const addList = (listInfo) => async (dispatch) => {
 
   dispatch({ type: CLEAR_BOARD_ERROR })
@@ -53,4 +70,13 @@ export const addList = (listInfo) => async (dispatch) => {
     dispatch({ type: CLEAR_ADD_LIST_LOADING })
   }
 
+}
+
+/**
+ * Set lists in an order
+ * 
+ * @param {Array} lists An array of lists of a board
+ */
+export const setLists = (lists) => {
+  return { type: SET_LISTS, payload: lists }
 }
