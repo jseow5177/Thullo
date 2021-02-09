@@ -1,8 +1,17 @@
+@import '../../../../assets//styles/global.scss';
+@import '../../../../assets/styles/colors.module.scss';
+
 .root {
-  width: 250px;
-  background-color: #ebecf0;
-  border-radius: 5px;
-  padding: 0.3rem 0.5rem;
-  max-height: 90%;
+  @extend .column;
+  background-color: $light-gray;
   overflow-y: auto;
+  margin-right: 1rem;
+
+  .listTitle {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row;
+    cursor: pointer;
+  }
 }
