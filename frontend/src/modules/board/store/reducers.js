@@ -1,6 +1,7 @@
 import {
   ADD_LIST,
   SET_LISTS,
+  SET_LAST_ACTIVE_BOARD,
   SET_ADD_LIST_LOADING,
   CLEAR_ADD_LIST_LOADING,
   SET_GET_LISTS_LOADING,
@@ -21,6 +22,11 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         lists: action.payload
+      }
+    case SET_LAST_ACTIVE_BOARD:
+      return {
+        ...state,
+        lastActiveBoardId: action.payload
       }
     case SET_ADD_LIST_LOADING:
       return {
