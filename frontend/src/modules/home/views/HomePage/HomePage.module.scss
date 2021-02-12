@@ -1,6 +1,6 @@
-.root {
+.boards {
   display: flex;
   flex-wrap: wrap; // So that the boards wrap to the next row
   justify-content: space-evenly;
-  overflow-y: hidden;
+  margin-top: 2rem;
 }

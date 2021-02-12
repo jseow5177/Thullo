@@ -9,16 +9,16 @@ import styles from './MainLayout.module.scss'
 
 function MainLayout({ children, home, board }) {
   return (
-    <div className={styles.layout}>
+    <>
       <MainHeader />
       {
         (home.getBoardsLoading || board.getListsLoading) &&
         <LinearProgress color="primary" />
       }
-      <div className={styles.childrenWrapper}>
+      <div className={styles.layout}>
         {children}
       </div>
-    </div>
+    </>
   )
 }
 

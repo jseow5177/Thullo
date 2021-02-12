@@ -8,8 +8,6 @@ import BoardList from '../../components/BoardList'
 import ListInput from '../../components/ListInput'
 import SnackAlert from '../../../../components/CustomMaterialUI/SnackAlert'
 
-// import MoreVertIcon from '@material-ui/icons/MoreVert'
-
 import { getLists, setLists } from '../../store/actions'
 import styles from './BoardView.module.scss'
 

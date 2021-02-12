@@ -1,3 +1,7 @@
+html, body, #root {
+  height: 100%;
+}
+
 html, body {
   margin: 0;
   padding: 0;
@@ -6,16 +10,10 @@ html, body {
     sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  height: 100%;
-}
-
-// Root div where elements are rendered
-#root {
-  height: 100%;
 }
 
 .column {
-  width: 250px;
+  min-width: 250px;
   border-radius: 5px;
   padding: 0.3rem 0.5rem;
 }

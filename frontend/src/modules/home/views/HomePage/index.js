@@ -12,7 +12,7 @@ import { retrieveBoards, setBoards, switchOrder } from '../../store/actions'
 import styles from './HomePage.module.scss'
 
 const Boards = SortableContainer(({ children }) => (
-  <div className={styles.root}>
+  <div className={styles.boards}>
     {children}
   </div>
 ))
@@ -35,7 +35,7 @@ function HomePage({ retrieveBoards, setBoards, switchOrder, home }) {
 
   useEffect(() => {
     if (home.error !== null) {
-      setSnack({ open: true, message: home.error.message })
+      setSnack({ open: true, message: home.error.message, severity: 'error' })
     }
   }, [home.error])
 
@@ -70,7 +70,7 @@ function HomePage({ retrieveBoards, setBoards, switchOrder, home }) {
   return (
     <>
       <AddBoard setSnack={setSnack} />
-      <Boards axis="xy" onSortEnd={handleDrag} transitionDuration={300}>
+      <Boards axis="xy" onSortEnd={handleDrag} transitionDuration={300} distance={1}>
         {
           home.boards.map((board, index) => (
             <Board key={index} index={index} board={board} />
