@@ -1,0 +1,25 @@
+@import '../../../../assets/styles/colors.module.scss';
+
+.cardInputWrapper {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  padding: 0.2rem;
+  transition: background-color 0.1s linear;
+  border-radius: 5px;
+
+  &:hover {
+    background-color: rgba(9,30,66,.08);
+  }
+
+  .icon {
+    fill: $dark-gray;
+    margin-right: 0.2rem;
+    width: 1.3rem;
+  }
+
+  .text {
+    color: $dark-gray;
+    font-size: 1rem;
+  }
+}
