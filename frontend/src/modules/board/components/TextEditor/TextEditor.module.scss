@@ -1,0 +1,70 @@
+@import '../../../../assets/styles/colors.module.scss';
+
+/* Copy paste of Material UI class with slight modifications */
+.MuiInputBase-root {
+  border: 1.5px solid $default;
+  color: $text-black;
+  font-size: 1rem;
+  font-family: sans-serif;
+  font-weight: 400;
+  line-height: 1.1876em;
+  letter-spacing: 0.00938em;
+  border-radius: 5px;
+  padding: 14px;
+
+  &:focus {
+    outline: none;
+    border: 2px solid $primary-blue;
+  }
+
+  &:hover:not(:focus) {
+    border: 0.5px solid $black;
+  }
+}
+
+.toolbar {
+  display: flex;
+  margin-bottom: 0.3rem;
+
+  .formatIcon {
+    margin-right: 0.3rem;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    cursor: pointer;
+
+    &:hover {
+      background-color: $very-light-blue;
+    }
+  }
+}
+
+.editor {
+  /* Follow the styles of Material UI text input */
+  @extend .MuiInputBase-root;
+
+  min-height: 100px;
+  max-height: 150px;
+  width: 100%;
+  overflow-y: auto;
+
+  /*
+  * overflow-wrap: Specify whether or not the browser may break lines within words to prevent overflow
+  *   when an otherwise unbreakable string is too long to fit in its container box. Same as word-wrap.
+  *
+  * word-break: Breaks a line in between two characters of a word which comes at the end of this line. 
+  *
+  * In short,
+  * overflow-wrap breaks a long word that definitely cannot fit within a container.
+  * word-break breaks a word at the end of line that could have fit in the container if it is pushed to the next line.
+  */
+  overflow-wrap: break-word;
+  hyphens: auto; /* Let browser decides on hyphenation */
+
+  &:empty:before {
+    content: attr(data-placeholder);
+    pointer-events: none;
+    display: block; /* For Firefox */
+    color: $placeholder-gray;
+  }
+}
