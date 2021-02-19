@@ -1,13 +1,14 @@
+import json
 from rest_framework import status
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.decorators import action
 
 from django.db.models import F
+from django.db import transaction
 
-from home.serializers import BoardSerializer, ListSerializer
-from home.models import Board
-from home.models import List
+from home.serializers import BoardSerializer, ListSerializer, LabelSerializer
+from home.models import Board, List, Label
 
 class BoardViewSet(ModelViewSet):
   """
@@ -25,7 +26,24 @@ class BoardViewSet(ModelViewSet):
     serializer = self.get_serializer(user_boards, many=True)
 
     return Response(data=serializer.data, status=status.HTTP_200_OK)
+  
+  def retrieve(self, request, pk=None):
 
+    boardInfo = {}
+
+    # TODO: Retrive board info. Throw 404 when not found
+
+    # Retrieve board lists
+    boardLists = List.objects.filter(board=pk)
+    boardInfo['lists'] = ListSerializer(boardLists, many=True).data
+
+    # Retrieve board labels
+    boardLabels = Label.objects.filter(board=pk)
+    boardInfo['labels'] = LabelSerializer(boardLabels, many=True).data
+
+    return Response(data=boardInfo, status=status.HTTP_200_OK)
+
+  @transaction.atomic
   def create(self, request):
 
     current_user = request.user
@@ -53,6 +71,12 @@ class BoardViewSet(ModelViewSet):
     # Save board
     serializer.save()
 
+    # Parse json string
+    labels = json.loads(request.data.get("labels"))
+
+    # Save board default labels
+    self.save_default_labels(labels, boardId=serializer.data['id'])
+
     return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
   @action(methods=['put'], detail=False)
@@ -71,23 +95,25 @@ class BoardViewSet(ModelViewSet):
 
     return Response(status=status.HTTP_200_OK)
 
+  def save_default_labels(self, labels, boardId):
+    """
+    Save the default labels of a board, constant time O(1)
+    """
+    for label in labels:
+      label.update({ 'board': boardId })
+
+      serializer = LabelSerializer(data=label)
+      serializer.is_valid(raise_exception=True)
+
+      serializer.save()
+    
+    return
+
 class ListViewSet(ModelViewSet):
   """
   A viewset for lists
   """
   serializer_class = ListSerializer
-
-  def get_queryset(self):
-    queryset = List.objects.all()
-    return queryset
-  
-  def list(self, request):
-    boardId = request.GET.get('boardId', '')
-
-    board_lists = self.get_queryset().filter(board=boardId)
-    serializer = self.get_serializer(board_lists, many=True)
-
-    return Response(data=serializer.data, status=status.HTTP_200_OK)
 
   def create(self, request):
     """
@@ -98,6 +124,25 @@ class ListViewSet(ModelViewSet):
     serializer.is_valid(raise_exception=True)
 
     # Save list
+    serializer.save()
+
+    return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+  
+class LabelViewSet(ModelViewSet):
+  """
+  A viewset for labels
+  """
+  serializer_class = LabelSerializer
+
+  def create(self, request):
+    """
+    Create a new label for a board
+    """
+    # Check if data is valid with serializer
+    serializer = self.get_serializer(data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    # Save label
     serializer.save()
 
     return Response(data=serializer.data, status=status.HTTP_201_CREATED)
