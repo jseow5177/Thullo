@@ -31,10 +31,10 @@
 
     .icon {
       cursor: pointer;
-      color: $dim-gray;
+      color: $dark-gray;
 
       &:hover {
-        color: darken($dim-gray, 20%);
+        color: darken($dark-gray, 20%);
       }
 
       &:nth-child(2) { // Add margin to the iconBtn in between
