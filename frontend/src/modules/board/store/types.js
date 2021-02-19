@@ -1,7 +1,7 @@
 export const ADD_LIST = 'ADD_LIST'
-
 export const SET_LISTS = 'SET_LISTS'
 
+export const ADD_LABEL = 'ADD_LABEL'
 export const SET_LABELS = 'SET_LABELS'
 
 export const SET_LAST_ACTIVE_BOARD = 'SET_LAST_ACTIVE_BOARD'

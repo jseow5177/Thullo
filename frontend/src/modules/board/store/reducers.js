@@ -1,6 +1,7 @@
 import {
   ADD_LIST,
   SET_LISTS,
+  ADD_LABEL,
   SET_LABELS,
   SET_LAST_ACTIVE_BOARD,
   SET_ADD_LIST_LOADING,
@@ -23,6 +24,11 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         lists: action.payload
+      }
+    case ADD_LABEL:
+      return {
+        ...state,
+        labels: [...state.labels, action.payload]
       }
     case SET_LABELS:
       return {
