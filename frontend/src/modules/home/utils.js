@@ -1,3 +1,8 @@
+import labelColors from '../../assets/styles/labelColors.module.scss'
+
+/**
+ * Create Image Object
+ */
 const createImage = (url) => (
   new Promise((resolve, reject) => {
     const image = new Image()
@@ -7,11 +12,20 @@ const createImage = (url) => (
   })
 )
 
+/**
+ * Convert angle in degree to radian
+ * 
+ * @param {Number} degree Angle in degree
+ */
 const getRadianValue = (degree) => {
   return (degree * Math.PI) / 180
 }
 
-// Helper function from https://ricardo-ch.github.io/react-easy-crop/
+/**
+ * Crop image according to pixelCrop and rotation angle
+ * 
+ * Helper function from https://ricardo-ch.github.io/react-easy-crop/
+ */
 export async function getCroppedImage(imageSrc, pixelCrop, rotation = 0) {
   const image = await createImage(imageSrc) // Create image object
   const canvas = document.createElement('canvas') // Create HTML canvas
@@ -53,3 +67,17 @@ export async function getCroppedImage(imageSrc, pixelCrop, rotation = 0) {
     canvas.toBlob(file => resolve(file), 'image/jpeg')
   })
 }
+
+/**
+ * Return an array of default labels when a board is created
+ * 
+ * @param {String} boardId The id of a board
+ */
+export const getBoardDefaultLabels = () => ([
+  { title: 'Story', color: labelColors.LGreen },
+  { title: 'Feature', color: labelColors.LYellow },
+  { title: 'Bug', color: labelColors.LRed },
+  { title: 'Frontend', color: labelColors.LPurple },
+  { title: 'Backend', color: labelColors.LDarkBlue },
+  { title: 'Task', color: labelColors.LLightBlue }
+])
