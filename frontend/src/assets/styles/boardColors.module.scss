@@ -1,0 +1,28 @@
+$board-white: #FFF;
+$board-red: #f28b82;
+$board-orange: #fbbc04;
+$board-yellow: #fff475;
+$board-green: #ccff90;
+$board-teal: #a7ffeb;
+$board-blue: #cbf0f8;
+$board-dark-blue: #aecbfa;
+$board-purple: #d7aefb;
+$board-pink: #fdcfe8;
+$board-brown: #e6c9a8;
+$board-grey: #e8eaed;
+
+:export {
+  // Color for boards
+  Default: $board-white;
+  Red: $board-red;
+  Orange: $board-orange;
+  Yellow: $board-yellow;
+  Green: $board-green;
+  Teal: $board-teal;
+  Blue: $board-blue;
+  Dark-blue: $board-dark-blue;
+  Purple: $board-purple;
+  Pink: $board-pink;
+  Brown: $board-brown;
+  Grey: $board-grey;
+}

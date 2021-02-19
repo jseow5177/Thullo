@@ -1,0 +1,24 @@
+$label-green: #61bd4f;
+$label-yellow: #f2d600;
+$label-orange: #ff9f1a;
+$label-red: #eb5a46;
+$label-purple: #c377e0;
+$label-dark-blue: #0079bf;
+$label-light-blue: #00c2e0;
+$label-lime: #51e898;
+$label-pink: #ff78cb;
+$label-black: #344563;
+
+:export {
+  // Color for labels
+  LGreen: $label-green;
+  LYellow: $label-yellow;
+  LOrange: $label-orange;
+  LRed: $label-red;
+  LPurple: $label-purple;
+  LDarkBlue: $label-dark-blue;
+  LLightBlue: $label-light-blue;
+  LLime: $label-lime;
+  LPink: $label-pink;
+  LBlack: $label-black;
+}
