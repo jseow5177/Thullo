@@ -20,8 +20,9 @@ import GroupAddIcon from '@material-ui/icons/GroupAdd'
 import InsertPhotoIcon from '@material-ui/icons/InsertPhoto'
 
 // All available board colors
-import boardColors from '../../../../assets/styles/colors.module.scss'
+import boardColors from '../../../../assets/styles/boardColors.module.scss'
 
+import { getBoardDefaultLabels } from '../../utils'
 import { addBoard } from '../../store/actions'
 import Image from '../../../../components/Image'
 import ColorPalette from '../ColorPalette'
@@ -90,6 +91,7 @@ function AddBoard({ addBoard, setSnack, home }) {
     boardFormData.append('color', boardInfo.color)
     boardFormData.append('image', boardInfo.image)
     boardFormData.append('order', lastBoard ? lastBoard.order + 1 : 1)
+    boardFormData.append('labels', JSON.stringify(getBoardDefaultLabels()))
 
     const success = await addBoard(boardFormData)
 
