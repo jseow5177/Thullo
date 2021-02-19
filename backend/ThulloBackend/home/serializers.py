@@ -1,4 +1,4 @@
-from home.models import Board, List
+from home.models import Board, List, Card, Label
 from rest_framework import serializers
 
 class BoardSerializer(serializers.ModelSerializer):
@@ -11,4 +11,10 @@ class ListSerializer(serializers.ModelSerializer):
 
   class Meta:
     model = List
+    fields = "__all__"
+
+class LabelSerializer(serializers.ModelSerializer):
+
+  class Meta:
+    model = Label
     fields = "__all__"
