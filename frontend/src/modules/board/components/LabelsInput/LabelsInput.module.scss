@@ -1,0 +1,40 @@
+@import '../../../../assets/styles/colors.module.scss';
+@import '../Label/Label.module.scss';
+
+.root {
+  display: flex;
+  align-items: center;
+
+  .addIcon {
+    font-size: 2rem;
+  }
+
+  .labelsWrapper {
+    width: fit-content;
+    display: flex;
+    flex-wrap: wrap;
+  }
+}
+
+.card {
+  width: 18rem;
+
+  .header {
+    text-align: center;
+
+    .backIcon {
+      position: absolute;
+      left: 5%;
+    }
+
+    .closeIcon {
+      position: absolute;
+      right: 5%;
+    }
+  }
+
+  .divider {
+    width: 90%;
+    margin: 0 auto;
+  }
+}
