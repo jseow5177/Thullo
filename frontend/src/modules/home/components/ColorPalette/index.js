@@ -2,7 +2,7 @@ import React from 'react'
 import PropTypes from 'prop-types'
 
 // All available board colors
-import boardColors from '../../../../assets/styles/colors.module.scss'
+import boardColors from '../../../../assets/styles/boardColors.module.scss'
 
 // Material UI Components
 import Avatar from '@material-ui/core/Avatar'
