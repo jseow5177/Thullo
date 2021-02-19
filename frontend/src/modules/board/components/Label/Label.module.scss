@@ -1,0 +1,30 @@
+@import '../../../../assets/styles/colors.module.scss';
+
+.hoverEffect {
+  &:hover {
+    border-left: 8px solid $light-black;
+  }
+}
+
+.rightMargin {
+  margin-right: 0.3rem;
+}
+
+.label {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.3rem 0.5rem;
+  border-radius: 5px;
+  color: $white;
+  cursor: pointer;
+
+  .labelTitle {
+    font-weight: bold;
+    font-size: 0.8rem;
+  }
+
+  .checkIcon {
+    font-size: 1rem;
+  }
+}
