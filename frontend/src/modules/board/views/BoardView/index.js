@@ -8,7 +8,7 @@ import BoardList from '../../components/BoardList'
 import ListInput from '../../components/ListInput'
 import SnackAlert from '../../../../components/CustomMaterialUI/SnackAlert'
 
-import { getLists, setLists } from '../../store/actions'
+import { retrieveBoard, setLists } from '../../store/actions'
 import styles from './BoardView.module.scss'
 
 const DroppableContainer = ({ children, provided }) => (
@@ -21,7 +21,7 @@ const DroppableContainer = ({ children, provided }) => (
   </div>
 )
 
-function BoardView({ board, getLists, setLists, match }) {
+function BoardView({ board, retrieveBoard, setLists, match }) {
 
   const [snack, setSnack] = useState({
     open: false,
@@ -30,8 +30,8 @@ function BoardView({ board, getLists, setLists, match }) {
   })
 
   useEffect(() => {
-    getLists(match.params.id)
-  }, [match.params.id, getLists])
+    retrieveBoard(match.params.id)
+  }, [match.params.id, retrieveBoard])
 
   useEffect(() => {
     if (board.error !== null) {
@@ -87,7 +87,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  getLists: (boardId) => dispatch(getLists(boardId)),
+  retrieveBoard: (boardId) => dispatch(retrieveBoard(boardId)),
   setLists: (lists) => dispatch(setLists(lists))
 })
 
