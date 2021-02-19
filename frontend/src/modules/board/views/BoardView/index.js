@@ -23,6 +23,8 @@ const DroppableContainer = ({ children, provided }) => (
 
 function BoardView({ board, retrieveBoard, setLists, match }) {
 
+  const boardId = match.params.id
+
   const [snack, setSnack] = useState({
     open: false,
     message: '',
@@ -30,8 +32,8 @@ function BoardView({ board, retrieveBoard, setLists, match }) {
   })
 
   useEffect(() => {
-    retrieveBoard(match.params.id)
-  }, [match.params.id, retrieveBoard])
+    retrieveBoard(boardId)
+  }, [boardId, retrieveBoard])
 
   useEffect(() => {
     if (board.error !== null) {
