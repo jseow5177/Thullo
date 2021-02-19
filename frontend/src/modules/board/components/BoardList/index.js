@@ -12,22 +12,15 @@ import Popover from '@material-ui/core/Popover'
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 
 import styles from './BoardList.module.scss'
+import CardInput from '../CardInput'
 
-const ListWrapper = ({ provided, children, style }) => (
-  <div
-    ref={provided.innerRef}
-    {...provided.draggableProps}
-    className={styles.root}
-    style={style}
-  >
+const ListWrapper = ({ children, innerRef, draggableProps, ...props }) => (
+  <div ref={innerRef} {...draggableProps} {...props}>
     {children}
   </div>
 )
-const ListTitle = ({ children, provided }) => (
-  <div
-    className={styles.listTitle}
-    {...provided.dragHandleProps}
-  >
+const ListTitle = ({ children, dragHandleProps, ...props }) => (
+  <div {...dragHandleProps} {...props}>
     {children}
   </div>
 )
@@ -55,9 +48,14 @@ const BoardList = ({ title, index }) => {
           >
             {
               style => (
-                <ListWrapper provided={provided} style={style}>
-                  <ListTitle provided={provided}>
-                    <Typography variant="overline" className={styles.text}>
+                <ListWrapper
+                  innerRef={provided.innerRef}
+                  draggableProps={provided.draggableProps}
+                  style={style} // Prop from NaturalDragAnimation
+                  className={styles.root}
+                >
+                  <ListTitle dragHandleProps={provided.dragHandleProps} className={styles.listTitle}>
+                    <Typography variant="h6" className={styles.text}>
                       {title}
                     </Typography>
                     <IconButton size="small" onClick={openPopover} className={styles.icon}>
@@ -83,6 +81,7 @@ const BoardList = ({ title, index }) => {
                       </List>
                     </Popover>
                   </ListTitle>
+                  <CardInput />
                 </ListWrapper>
               )
             }
