@@ -4,30 +4,33 @@ import {
   SET_LAST_ACTIVE_BOARD,
   SET_ADD_LIST_LOADING,
   CLEAR_ADD_LIST_LOADING,
-  SET_GET_LISTS_LOADING,
-  CLEAR_GET_LISTS_LOADING,
   SET_BOARD_ERROR,
   CLEAR_BOARD_ERROR,
+  SET_RETRIEVE_BOARD_LOADING,
+  CLEAR_RETRIEVE_BOARD_LOADING,
+  SET_LABELS,
 } from './types'
 import BoardService from '../services/board.service'
 
 /**
- * Retrive the lists of a board
+ * Retrieve the lists, cards and labels of a board
  * 
  * @param {String} boardId The id of viewed board
  */
-export const getLists = (boardId) => async (dispatch, getState) => {
+export const retrieveBoard = (boardId) => async (dispatch, getState) => {
 
   const lastViewedBoard = getState().board.lastActiveBoardId
 
-  dispatch({ type: SET_GET_LISTS_LOADING })
+  dispatch({ type: SET_RETRIEVE_BOARD_LOADING })
 
   try {
-    // Only retrieve when the viewed board changes
+    // Only retrieve when the different from the last viewed board
     if (lastViewedBoard !== boardId) {
-      const res = await BoardService.getLists(boardId)
+      const res = await BoardService.retrieveBoard(boardId)
 
-      dispatch({ type: SET_LISTS, payload: res.data })
+      dispatch({ type: SET_LISTS, payload: res.data.lists })
+      dispatch({ type: SET_LABELS, payload: res.data.labels })
+
       dispatch({ type: SET_LAST_ACTIVE_BOARD, payload: boardId })
     }
 
@@ -39,7 +42,7 @@ export const getLists = (boardId) => async (dispatch, getState) => {
     })
     return false
   } finally {
-    dispatch({ type: CLEAR_GET_LISTS_LOADING })
+    dispatch({ type: CLEAR_RETRIEVE_BOARD_LOADING })
   }
 
 }
