@@ -1,0 +1,28 @@
+@import '../../../../assets/styles/colors.module.scss';
+
+.subheader {
+  padding-top: 0.8rem;
+  display: block;
+}
+
+.colorTagWrapper {
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  .colorTag {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 2.8rem;
+    height: 1.8rem;
+    border-radius: 5px;
+    color: $white;
+  }
+}
+
+.btnWrapper {
+  margin-top: 1.3rem;
+}
