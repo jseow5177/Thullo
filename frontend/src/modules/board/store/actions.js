@@ -1,6 +1,8 @@
 import {
   ADD_LIST,
   SET_LISTS,
+  ADD_LABEL,
+  SET_LABELS,
   SET_LAST_ACTIVE_BOARD,
   SET_ADD_LIST_LOADING,
   CLEAR_ADD_LIST_LOADING,
@@ -8,7 +10,6 @@ import {
   CLEAR_BOARD_ERROR,
   SET_RETRIEVE_BOARD_LOADING,
   CLEAR_RETRIEVE_BOARD_LOADING,
-  SET_LABELS,
 } from './types'
 import BoardService from '../services/board.service'
 
@@ -73,6 +74,29 @@ export const addList = (listInfo) => async (dispatch) => {
     dispatch({ type: CLEAR_ADD_LIST_LOADING })
   }
 
+}
+
+/**
+ * Add a new label to the board
+ *
+ * @param {Object} labelInfo The label to be created. Has three fields: title, color and board
+ */
+export const addLabel = (labelInfo) => async (dispatch) => {
+
+  dispatch({ type: CLEAR_BOARD_ERROR })
+
+  try {
+    const res = await BoardService.addLabel(labelInfo)
+
+    dispatch({ type: ADD_LABEL, payload: res.data })
+
+    return res.data
+  } catch (error) {
+    dispatch({
+      type: SET_BOARD_ERROR,
+      payload: error
+    })
+  }
 }
 
 /**

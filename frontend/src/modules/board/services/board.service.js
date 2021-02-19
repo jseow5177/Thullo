@@ -32,6 +32,16 @@ const BoardService = {
     } catch (error) {
       throw new BoardError(error.response.status, error.response.data)
     }
+  },
+
+  addLabel: async (labelInfo) => {
+    try {
+      const response = await ApiService.post('/label/', labelInfo)
+
+      return response
+    } catch (error) {
+      throw new BoardError(error.response.status, error.response.data)
+    }
   }
 
 }
