@@ -37,4 +37,9 @@
     width: 90%;
     margin: 0 auto;
   }
+
+  .content {
+    max-height: 25rem;
+    overflow-y: auto;
+  }
 }

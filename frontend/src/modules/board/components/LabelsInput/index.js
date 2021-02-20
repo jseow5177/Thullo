@@ -99,12 +99,12 @@ function LabelsInput({ board, onLabelSelect, selectedLabels }) {
         anchorEl={anchorEl}
         onClose={closeLabelsInput}
         anchorOrigin={{
-          vertical: "bottom",
-          horizontal: "left"
+          vertical: 'center',
+          horizontal: 'right',
         }}
         transformOrigin={{
-          vertical: "top",
-          horizontal: "left"
+          vertical: 'center',
+          horizontal: 'left',
         }}
       >
         <Card className={styles.card}>
@@ -129,7 +129,7 @@ function LabelsInput({ board, onLabelSelect, selectedLabels }) {
             }
           />
           <Divider className={styles.divider} />
-          <CardContent>
+          <CardContent className={styles.content}>
             {renderCardContent()}
           </CardContent>
         </Card>
