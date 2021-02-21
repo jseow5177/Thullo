@@ -13,10 +13,10 @@ import styles from './ChooseLabel.module.scss'
 
 function ChooseLabel({
   board,
+  selectedLabels,
   searchKeyword,
   handleSearchKeywordChange,
   handleLabelSelect,
-  selectedLabels,
   redirectToNew,
   redirectToEdit
 }) {
@@ -57,7 +57,7 @@ function ChooseLabel({
               selected={selectedLabels.includes(label.id)}
               hover
             />
-            <IconButton size="small" onClick={redirectToEdit}>
+            <IconButton size="small" onClick={() => redirectToEdit(label.id)}>
               <EditIcon />
             </IconButton>
           </div>
