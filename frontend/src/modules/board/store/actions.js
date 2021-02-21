@@ -2,6 +2,8 @@ import {
   ADD_LIST,
   SET_LISTS,
   ADD_LABEL,
+  UPDATE_LABEL,
+  DELETE_LABEL,
   SET_LABELS,
   SET_LAST_ACTIVE_BOARD,
   SET_ADD_LIST_LOADING,
@@ -91,6 +93,47 @@ export const addLabel = (labelInfo) => async (dispatch) => {
     dispatch({ type: ADD_LABEL, payload: res.data })
 
     return res.data
+  } catch (error) {
+    dispatch({
+      type: SET_BOARD_ERROR,
+      payload: error
+    })
+  }
+}
+
+/**
+ * Update an existing label of a board
+ * 
+ * @param {Object} labelInfo The label to be updated. Has four fields: id, title, color, board 
+ */
+export const updateLabel = (labelInfo) => async (dispatch) => {
+
+  dispatch({ type: CLEAR_BOARD_ERROR })
+
+  try {
+    const res = await BoardService.updateLabel(labelInfo)
+
+    dispatch({ type: UPDATE_LABEL, payload: res.data })
+
+    return true
+  } catch (error) {
+    dispatch({
+      type: SET_BOARD_ERROR,
+      payload: error
+    })
+  }
+}
+
+export const deleteLabel = (labelId) => async (dispatch) => {
+
+  dispatch({ type: CLEAR_BOARD_ERROR })
+
+  try {
+    await BoardService.deleteLabel(labelId)
+
+    dispatch({ type: DELETE_LABEL, payload: labelId })
+
+    return true
   } catch (error) {
     dispatch({
       type: SET_BOARD_ERROR,

@@ -42,6 +42,26 @@ const BoardService = {
     } catch (error) {
       throw new BoardError(error.response.status, error.response.data)
     }
+  },
+
+  updateLabel: async (labelInfo) => {
+    try {
+      const response = await ApiService.put(`/label/${labelInfo.id}/`, labelInfo)
+
+      return response
+    } catch (error) {
+      throw new BoardError(error.response.status, error.response.data)
+    }
+  },
+
+  deleteLabel: async (labelId) => {
+    try {
+      const response = await ApiService.delete(`/label/${labelId}/`)
+
+      return response
+    } catch (error) {
+      throw new BoardError(error.response.status, error.response.data)
+    }
   }
 
 }
