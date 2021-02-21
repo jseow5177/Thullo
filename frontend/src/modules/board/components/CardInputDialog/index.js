@@ -6,7 +6,7 @@ import DialogContent from '@material-ui/core/DialogContent'
 import DialogActions from '@material-ui/core/DialogActions'
 import Button from '@material-ui/core/Button'
 import TextField from '@material-ui/core/TextField'
-import TextEditor from '../TextEditor'
+import LabelsInput from '../LabelsInput'
 
 import TitleIcon from '@material-ui/icons/Title' // For summary
 import NotesIcon from '@material-ui/icons/Notes' // For description
@@ -43,11 +43,24 @@ function CardInputDialog({ open, handleClose }) {
     setCardInfo({ ...cardInfo, summary: e.target.value })
   }
 
-  const handleDescriptionChange = (value) => {
-    setCardInfo({ ...cardInfo, description: value })
+  const handleDescriptionChange = (e) => {
+    setCardInfo({ ...cardInfo, description: e.target.value })
   }
 
-  console.log(cardInfo.description)
+  const handleLabelsChange = (labelId) => {
+    const foundLabelId = cardInfo.labels.find(label => label === labelId)
+
+    if (foundLabelId === undefined) {
+      setCardInfo({ ...cardInfo, labels: [...cardInfo.labels, labelId] })
+    } else {
+      removeSelectedLabel(labelId)
+    }
+  }
+
+  const removeSelectedLabel = (labelId) => {
+    const newLabels = cardInfo.labels.filter(label => label !== labelId)
+    setCardInfo({ ...cardInfo, labels: newLabels })
+  }
 
   return (
     <Dialog
@@ -57,6 +70,7 @@ function CardInputDialog({ open, handleClose }) {
     >
       <DialogTitle>Create Card</DialogTitle>
       <DialogContent>
+        {/* Card Summary */}
         <Input
           icon={<TitleIcon className={styles.icon} />}
           label="Card Summary"
@@ -71,14 +85,32 @@ function CardInputDialog({ open, handleClose }) {
             />
           }
         />
+        {/* Card Labels */}
+        <Input
+          icon={<LabelIcon className={styles.icon} />}
+          label="Label"
+          inputComponent={
+            <LabelsInput
+              selectedLabels={cardInfo.labels}
+              onLabelSelect={handleLabelsChange}
+              removeSelectedLabel={removeSelectedLabel}
+            />
+          }
+        />
+        {/* Card Description */}
         <Input
           icon={<NotesIcon className={styles.icon} />}
           label="Description"
           inputComponent={
-            <TextEditor
-              placeholder="Add a more detailed description of your card..."
+            <TextField
+              variant="outlined"
+              multiline
+              rows={4}
+              size="small"
+              fullWidth
+              placeholder={"Add a more detailed description to your card..."}
               value={cardInfo.description}
-              handleChange={handleDescriptionChange}
+              onChange={handleDescriptionChange}
             />
           }
         />
