@@ -1,5 +1,6 @@
 import React, { useState, useRef } from 'react'
 import { connect } from 'react-redux'
+import { withRouter } from 'react-router-dom'
 
 import Card from '@material-ui/core/Card'
 import CardHeader from '@material-ui/core/CardHeader'
@@ -8,17 +9,23 @@ import IconButton from '@material-ui/core/IconButton'
 import Popover from '@material-ui/core/Popover'
 import Typography from '@material-ui/core/Typography'
 import Divider from '@material-ui/core/Divider'
+import Button from '@material-ui/core/Button'
 
 import AddBoxIcon from '@material-ui/icons/AddBox'
 import CloseIcon from '@material-ui/icons/Close'
 import ArrowBackIcon from '@material-ui/icons/ArrowBack'
 
 import ChooseLabel from '../ChooseLabel'
-import NewLabel from '../NewLabel'
+import LabelForm from '../LabelForm'
 import Label from '../Label'
+import { addLabel, updateLabel, deleteLabel } from '../../store/actions'
+import BOARD from '../../constants'
 import styles from './LabelsInput.module.scss'
+import labelColors from '../../../../assets/styles/labelColors.module.scss'
 
-function LabelsInput({ board, onLabelSelect, selectedLabels }) {
+function LabelsInput({ board, match, selectedLabels, onLabelSelect, removeSelectedLabel, addLabel, updateLabel, deleteLabel }) {
+
+  const boardId = match.params.id
 
   const buttonRef = useRef()
 
@@ -26,6 +33,12 @@ function LabelsInput({ board, onLabelSelect, selectedLabels }) {
 
   const [searchKeyword, setSearchKeyword] = useState('')
   const [activeContent, setActiveContent] = useState('choose')
+  const [labelInfo, setLabelInfo] = useState({
+    id: undefined,
+    title: '',
+    color: '',
+    board: boardId
+  })
 
   const openLabelsInput = () => {
     setAnchorEl(buttonRef.current)
@@ -39,31 +52,127 @@ function LabelsInput({ board, onLabelSelect, selectedLabels }) {
     setSearchKeyword(keyword)
   }
 
+  const redirectToChoose = () => {
+    setActiveContent('choose')
+  }
+
+  const redirectToEdit = (labelId) => {
+    const clickedLabel = board.labels.find(label => label.id === labelId)
+
+    setLabelInfo({
+      ...labelInfo, // To retain the board Id
+      ...clickedLabel
+    })
+
+    setActiveContent('edit')
+  }
+
+  const redirectToNew = () => {
+    /**
+     * some() method tests whether at least one element in the array passes the test
+     *  implemented in the function.
+     * 
+     * With the "!" bang operator, it returns false whenever color === label.color
+     */
+    const unusedLabelColors = Object.values(labelColors).filter(color =>
+      !board.labels.some(label => color === label.color))
+
+    setLabelInfo({
+      ...labelInfo,
+      title: searchKeyword,
+      color: unusedLabelColors[0]
+    })
+
+    setActiveContent('new')
+  }
+
+  const redirectToDelete = () => {
+    setActiveContent('delete')
+  }
+
+  const submitNewLabel = async (labelInfo) => {
+    const newlyAddedLabel = await addLabel(labelInfo)
+
+    if (newlyAddedLabel) {
+      onLabelSelect(newlyAddedLabel.id)
+      setSearchKeyword('')
+      redirectToChoose()
+    }
+  }
+
+  const submitUpdatedLabel = async (labelInfo) => {
+    const successfulUpdate = await updateLabel(labelInfo)
+
+    if (successfulUpdate) {
+      redirectToChoose()
+    }
+  }
+
+  const submitDeletedLabel = async () => {
+    /**
+     * To access the delete page, the user must first visits the update page (through redirectToUpdate).
+     * 
+     * When redirectToUpdate is called, the labelInfo state will be set to the appropriate label.
+     * 
+     * Hence, when delete, we can just access the label id via labelInfo.id.
+     */
+    const successfulDelete = await deleteLabel(labelInfo.id)
+
+    if (successfulDelete) {
+      removeSelectedLabel(labelInfo.id) // Remove label from being selected if it is deleted
+      redirectToChoose()
+    }
+
+  }
+
   const renderCardContent = () => {
     switch (activeContent) {
       case 'choose':
         return (
           <ChooseLabel
             searchKeyword={searchKeyword}
+            selectedLabels={selectedLabels}
             handleSearchKeywordChange={handleSearchKeywordChange}
             handleLabelSelect={onLabelSelect}
-            selectedLabels={selectedLabels}
-            redirectToNew={() => setActiveContent('new')}
-            redirectToEdit={() => setActiveContent('edit')}
+            redirectToNew={redirectToNew}
+            redirectToEdit={redirectToEdit}
           />
         )
       case 'new':
         return (
-          <NewLabel
-            searchKeyword={searchKeyword}
-            handleLabelSelect={onLabelSelect}
-            redirectToChoose={() => setActiveContent('choose')}
+          <LabelForm
+            label={labelInfo}
+            onSubmit={submitNewLabel}
+            onCancel={redirectToChoose}
+            isCreateNew
           />
         )
       case 'edit':
         return (
+          <LabelForm
+            label={labelInfo}
+            onSubmit={submitUpdatedLabel}
+            onCancel={redirectToDelete}
+          />
+        )
+      case 'delete':
+        return (
           <>
-            <h1>Edit</h1>
+            <Typography
+              variant="body2"
+              gutterBottom
+            >
+              This label will be removed from all cards. It cannot be undone!
+            </Typography>
+            <Button
+              variant="contained"
+              color="secondary"
+              size="small"
+              fullWidth
+              onClick={submitDeletedLabel}
+            >
+              Delete
+            </Button>
           </>
         )
       default:
@@ -116,12 +225,12 @@ function LabelsInput({ board, onLabelSelect, selectedLabels }) {
                   <IconButton
                     size="small"
                     className={styles.backIcon}
-                    onClick={() => setActiveContent('choose')}
+                    onClick={redirectToChoose}
                   >
                     <ArrowBackIcon />
                   </IconButton>
                 }
-                Label
+                {BOARD.LABELS_PAGE_TITLE[activeContent]}
                 <IconButton size="small" className={styles.closeIcon} onClick={closeLabelsInput}>
                   <CloseIcon />
                 </IconButton>
@@ -142,4 +251,10 @@ const mapStateToProps = (state) => ({
   board: state.board
 })
 
-export default connect(mapStateToProps, null)(LabelsInput)
+const mapDispatchToProps = (dispatch) => ({
+  addLabel: (labelInfo) => dispatch(addLabel(labelInfo)),
+  updateLabel: (labelInfo) => dispatch(updateLabel(labelInfo)),
+  deleteLabel: (labelId) => dispatch(deleteLabel(labelId))
+})
+
+export default withRouter(connect(mapStateToProps, mapDispatchToProps)(LabelsInput))
