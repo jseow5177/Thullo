@@ -2,6 +2,8 @@ import {
   ADD_LIST,
   SET_LISTS,
   ADD_LABEL,
+  UPDATE_LABEL,
+  DELETE_LABEL,
   SET_LABELS,
   SET_LAST_ACTIVE_BOARD,
   SET_ADD_LIST_LOADING,
@@ -29,6 +31,22 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         labels: [...state.labels, action.payload]
+      }
+    case UPDATE_LABEL:
+      const indexOfUpdatedLabel = state.labels.findIndex(label => label.id === action.payload.id)
+      const newLabelsAfterUpdate = [...state.labels]
+      newLabelsAfterUpdate[indexOfUpdatedLabel] = action.payload
+
+      return {
+        ...state,
+        labels: newLabelsAfterUpdate
+      }
+    case DELETE_LABEL:
+      const newLabelsAfterDelete = state.labels.filter(label => label.id !== action.payload)
+
+      return {
+        ...state,
+        labels: [...newLabelsAfterDelete]
       }
     case SET_LABELS:
       return {
