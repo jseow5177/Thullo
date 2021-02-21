@@ -38,7 +38,7 @@ class BoardViewSet(ModelViewSet):
     boardInfo['lists'] = ListSerializer(boardLists, many=True).data
 
     # Retrieve board labels
-    boardLabels = Label.objects.filter(board=pk)
+    boardLabels = Label.objects.filter(board=pk).order_by('id')
     boardInfo['labels'] = LabelSerializer(boardLabels, many=True).data
 
     return Response(data=boardInfo, status=status.HTTP_200_OK)
@@ -134,6 +134,10 @@ class LabelViewSet(ModelViewSet):
   """
   serializer_class = LabelSerializer
 
+  def get_queryset(self):
+    queryset = Label.objects.all()
+    return queryset
+
   def create(self, request):
     """
     Create a new label for a board
@@ -146,3 +150,26 @@ class LabelViewSet(ModelViewSet):
     serializer.save()
 
     return Response(data=serializer.data, status=status.HTTP_201_CREATED)
+  
+  def update(self, request, pk=None):
+    """
+    Update an existing label of a board
+    """
+    label = Label.objects.get(pk=pk)
+
+    # Check if data is valid with serializer
+    serializer = self.get_serializer(label, data=request.data)
+    serializer.is_valid(raise_exception=True)
+
+    # Save existing label
+    serializer.save()
+
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+  def delete(self, request, pk, format=None):
+
+    label = Label.objects.filter(pk=pk)
+
+    label.delete()
+
+    return Response(status=status.HTTP_204_NO_CONTENT)
