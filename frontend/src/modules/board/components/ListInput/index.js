@@ -13,16 +13,16 @@ import CloseIcon from '@material-ui/icons/Close'
 import { addList } from '../../store/actions'
 import styles from './ListInput.module.scss'
 
-const ClosedInput = ({ children, handleClick }) => (
-  <div className={styles.closedInput} onClick={handleClick}>{children}</div>
+const ClosedInput = ({ children, ...props }) => (
+  <div {...props}>{children}</div>
 )
 
-const OpenedInput = forwardRef(({ children }, ref) => (
-  <div ref={ref} className={styles.openedInput}>{children}</div>
+const OpenedInput = forwardRef(({ children, ...props }, ref) => (
+  <div ref={ref} {...props}>{children}</div>
 ))
 
-const Actions = ({ children }) => (
-  <div className={styles.actions}>{children}</div>
+const Actions = ({ children, ...props }) => (
+  <div {...props}>{children}</div>
 )
 
 function ListInput({ match, addList, board, setSnack }) {
@@ -62,7 +62,7 @@ function ListInput({ match, addList, board, setSnack }) {
     if (isInputOpen) {
       return (
         <ClickAwayListener onClickAway={closeListInput}>
-          <OpenedInput>
+          <OpenedInput className={styles.openedInput}>
             <TextField
               variant="outlined"
               placeholder="Enter list title..."
@@ -73,7 +73,7 @@ function ListInput({ match, addList, board, setSnack }) {
               onChange={handleTextChange}
               className={styles.input}
             />
-            <Actions>
+            <Actions className={styles.actions}>
               <LoadingButton
                 variant="contained"
                 color="primary"
@@ -91,7 +91,7 @@ function ListInput({ match, addList, board, setSnack }) {
       )
     } else {
       return (
-        <ClosedInput handleClick={openListInput}>
+        <ClosedInput className={styles.closedInput} onClick={openListInput}>
           <AddIcon className={styles.icon} />
           <Typography variant="overline">
             Add a list
