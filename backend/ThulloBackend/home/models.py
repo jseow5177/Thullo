@@ -35,7 +35,8 @@ class Card(models.Model):
   summary = models.TextField(blank=False, null=False)
   description = models.TextField(blank=True, null=False)
 
-  # labels = models.ManyToManyField(Label)
+  board_list = models.ForeignKey(List, on_delete=models.CASCADE)
+  labels = models.ManyToManyField(Label, blank=True)
 
   class Meta:
     verbose_name = "Card"
