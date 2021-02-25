@@ -10,7 +10,8 @@ const CardInputWrapper = ({ children, ...props }) => (
   <div {...props}>{children}</div >
 )
 
-function CardInput() {
+function CardInput({ listId }) {
+
   const [isDialogOpen, setIsDialogOpen] = useState(false)
 
   const openCardInputDialog = () => {
@@ -29,7 +30,14 @@ function CardInput() {
           Add a Card
         </Typography>
       </CardInputWrapper>
-      <CardInputDialog open={isDialogOpen} handleClose={closeCardInputDialog} />
+      {
+        isDialogOpen && /* Ensure Dialog is unmounted when closed */
+        <CardInputDialog
+          listId={listId}
+          open={true}
+          handleClose={closeCardInputDialog}
+        />
+      }
     </>
   )
 }
