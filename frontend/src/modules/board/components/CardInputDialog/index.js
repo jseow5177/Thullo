@@ -1,4 +1,6 @@
 import React, { useState } from 'react'
+import { connect } from 'react-redux'
+import Select from 'react-select'
 
 import Dialog from '@material-ui/core/Dialog'
 import DialogTitle from '@material-ui/core/DialogTitle'
@@ -15,6 +17,8 @@ import SupervisorAccountIcon from '@material-ui/icons/SupervisorAccount' // For 
 import SupervisedUserCircleIcon from '@material-ui/icons/SupervisedUserCircle' // For assignee
 
 import styles from './CardInputDialog.module.scss'
+import { addCard } from '../../store/actions'
+import appColors from '../../../../assets/styles/colors.module.scss'
 import { Typography } from '@material-ui/core'
 
 const Input = ({ icon, label, inputComponent }) => (
@@ -29,17 +33,45 @@ const Input = ({ icon, label, inputComponent }) => (
   </div>
 )
 
-function CardInputDialog({ open, handleClose }) {
+const reactSelectCustomStyles = {
+  control: (provided, state) => ({
+    ...provided,
+    boxShadow: 'none',
+    border: state.isFocused && `2px solid ${appColors.PrimaryBlue}`,
+
+    '&:hover': {
+      border: !state.isFocused && `1px solid ${appColors.Black}`,
+    },
+  }),
+  multiValueLabel: (provided) => ({
+    ...provided,
+    backgroundColor: appColors.VeryLightBlue,
+  }),
+  multiValueRemove: (provided) => ({
+    ...provided,
+    backgroundColor: appColors.VeryLightBlue,
+
+    '&:hover': {
+      backgroundColor: appColors.PrimaryBlue,
+      color: appColors.White
+    }
+  })
+}
+
+function CardInputDialog({ board, open, handleClose, addCard, listId }) {
 
   const [cardInfo, setCardInfo] = useState({
     summary: '',
     description: '',
     labels: [],
     reporters: [],
-    assignees: []
+    assignees: [],
+    listId
   })
+  const [summaryError, setSummaryError] = useState('')
 
   const handleSummaryChange = (e) => {
+    setSummaryError('')
     setCardInfo({ ...cardInfo, summary: e.target.value })
   }
 
@@ -50,8 +82,10 @@ function CardInputDialog({ open, handleClose }) {
   const handleLabelsChange = (labelId) => {
     const foundLabelId = cardInfo.labels.find(label => label === labelId)
 
+    // If not selected, select it
     if (foundLabelId === undefined) {
       setCardInfo({ ...cardInfo, labels: [...cardInfo.labels, labelId] })
+      // If selected, unselect it
     } else {
       removeSelectedLabel(labelId)
     }
@@ -60,6 +94,24 @@ function CardInputDialog({ open, handleClose }) {
   const removeSelectedLabel = (labelId) => {
     const newLabels = cardInfo.labels.filter(label => label !== labelId)
     setCardInfo({ ...cardInfo, labels: newLabels })
+  }
+
+  const handleCollabortorsChange = (arr, id) => {
+    setCardInfo({ ...cardInfo, [id]: arr })
+  }
+
+  const submitCardInfo = async () => {
+    const isSavedSuccess = await addCard(cardInfo)
+
+    if (isSavedSuccess) {
+      handleClose() // Close Dialog when save is successful
+    }
+  }
+
+  const validateSummaryInput = () => {
+    if (cardInfo.summary === '') {
+      setSummaryError("Card Summary is required")
+    }
   }
 
   return (
@@ -82,6 +134,9 @@ function CardInputDialog({ open, handleClose }) {
               placeholder="Describe your card..."
               value={cardInfo.summary}
               onChange={handleSummaryChange}
+              onBlur={validateSummaryInput}
+              error={summaryError !== ''}
+              helperText={summaryError}
             />
           }
         />
@@ -114,17 +169,52 @@ function CardInputDialog({ open, handleClose }) {
             />
           }
         />
+        {/* Assignee */}
+        <Input
+          icon={<SupervisedUserCircleIcon className={styles.icon} />}
+          label="Assignee"
+          inputComponent={
+            <Select
+              id="assignees"
+              styles={reactSelectCustomStyles}
+              isMulti
+              options={board.collaborators}
+              isSearchable
+              isClearable
+              onChange={(arr) => handleCollabortorsChange(arr, "assignees")}
+            />
+          }
+        />
+        {/* Reporter */}
+        <Input
+          icon={<SupervisorAccountIcon className={styles.icon} />}
+          label="Reporter"
+          inputComponent={
+            <Select
+              id="reporters"
+              styles={reactSelectCustomStyles}
+              isMulti
+              options={board.collaborators}
+              isSearchable
+              isClearable
+              onChange={(arr) => handleCollabortorsChange(arr, "reporters")}
+            />
+          }
+        />
       </DialogContent>
-      <DialogActions>
+      <DialogActions className={styles.actions}>
         <Button
           variant="contained"
           color="primary"
+          onClick={submitCardInfo}
+          disabled={cardInfo.summary === ''}
         >
           Create
         </Button>
         <Button
           variant="outlined"
           color="secondary"
+          onClick={handleClose}
         >
           Cancel
         </Button>
@@ -133,4 +223,12 @@ function CardInputDialog({ open, handleClose }) {
   )
 }
 
-export default CardInputDialog
+const mapStateToProps = (state) => ({
+  board: state.board
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  addCard: (cardInfo) => dispatch(addCard(cardInfo))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(CardInputDialog)
