@@ -5,6 +5,9 @@ import {
   UPDATE_LABEL,
   DELETE_LABEL,
   SET_LABELS,
+  ADD_CARD,
+  SET_CARDS,
+  SET_COLLABORATORS,
   SET_LAST_ACTIVE_BOARD,
   SET_ADD_LIST_LOADING,
   CLEAR_ADD_LIST_LOADING,
@@ -52,6 +55,38 @@ const reducers = (state = initialState, action) => {
       return {
         ...state,
         labels: action.payload
+      }
+    case ADD_CARD:
+      const listId = action.payload.board_list
+      let newCards
+
+      if (listId in state.cards) { // If there is an existing list with cards, add new card into it
+        const existingCards = state.cards.listId
+        newCards = [...existingCards, action.payload]
+      } else { // If it is a new list, initialise its array of cards
+        newCards = [action.payload]
+      }
+
+      return {
+        ...state,
+        cards: { ...state.cards, [listId]: newCards }
+      }
+    case SET_CARDS:
+      const { listId: id, cards } = action.payload
+
+      return {
+        ...state,
+        cards: { ...state.cards, [id]: cards }
+      }
+    case SET_COLLABORATORS:
+      const collaborators = action.payload.map(collaborator => ({
+        value: collaborator.id,
+        label: collaborator.username
+      }))
+
+      return {
+        ...state,
+        collaborators: collaborators
       }
     case SET_LAST_ACTIVE_BOARD:
       return {
