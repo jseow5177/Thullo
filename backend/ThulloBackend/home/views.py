@@ -7,8 +7,8 @@ from rest_framework.decorators import action
 from django.db.models import F
 from django.db import transaction
 
-from home.serializers import BoardSerializer, ListSerializer, LabelSerializer
-from home.models import Board, List, Label
+from home.serializers import BoardSerializer, ListSerializer, LabelSerializer, CardSerializer
+from home.models import Board, List, Label, Card
 
 class BoardViewSet(ModelViewSet):
   """
@@ -28,6 +28,12 @@ class BoardViewSet(ModelViewSet):
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   
   def retrieve(self, request, pk=None):
+    """
+    Retrieve board lists and labels
+
+    The cards will be retrieved by each list through a separate API
+      when they are rendered on the frontend
+    """
 
     boardInfo = {}
 
@@ -173,3 +179,48 @@ class LabelViewSet(ModelViewSet):
     label.delete()
 
     return Response(status=status.HTTP_204_NO_CONTENT)
+
+class CardViewSet(ModelViewSet):
+  """
+  A viewset for cards
+  """
+  serializer_class = CardSerializer
+
+  def get_queryset(self):
+    queryset = Card.objects.all()
+    return queryset
+  
+  def list(self, request):
+    list_id = request.GET.get('listId')
+
+    cards = self.get_queryset().filter(board_list=list_id)
+    serializer = self.get_serializer(cards, many=True)
+
+    return Response(data=serializer.data, status=status.HTTP_200_OK)
+
+  @transaction.atomic
+  def create(self, request):
+    """
+    Create a new card for a list in a board
+    """
+    card_labels = request.data.get("labels")
+
+    card_data = {
+      "summary": request.data.get("summary"),
+      "description": request.data.get("description"),
+      "board_list": request.data.get("listId")
+    }
+
+    # Check if data is valid with serializer
+    serializer = self.get_serializer(data=card_data)
+    serializer.is_valid(raise_exception=True)
+
+    # Save new card
+    card = serializer.save()
+
+    # Get the labels related to the card
+    related_labels = Label.objects.filter(id__in=card_labels).only("id")
+    # Save the labels
+    card.labels.add(*related_labels)
+
+    return Response(data=serializer.data, status=status.HTTP_201_CREATED)
