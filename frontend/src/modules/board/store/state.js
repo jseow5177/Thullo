@@ -1,11 +1,12 @@
 const initialState = {
   lists: [],
   labels: [],
-  cards: [],
+  cards: {},
+  collaborators: [],
   error: null,
   lastActiveBoardId: null,
   addListLoading: false,
-  retrieveBoardLoading: false
+  retrieveBoardLoading: false,
 }
 
 export default initialState
