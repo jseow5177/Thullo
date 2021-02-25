@@ -18,3 +18,11 @@ class LabelSerializer(serializers.ModelSerializer):
   class Meta:
     model = Label
     fields = "__all__"
+  
+class CardSerializer(serializers.ModelSerializer):
+  
+  labels = LabelSerializer(many=True)
+
+  class Meta:
+    model = Card
+    fields = "__all__"
