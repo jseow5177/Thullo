@@ -14,6 +14,11 @@ class BoardError extends ThulloError {
 
 const BoardService = {
 
+  /**
+   * Retrieves all info about a board (including lists, cards and labels)
+   * 
+   * @param {String} boardId The id of a board
+   */
   retrieveBoard: async (boardId) => {
     try {
       const response = await ApiService.get(`/board/${boardId}/`)
@@ -24,6 +29,11 @@ const BoardService = {
     }
   },
 
+  /**
+   * Add a new list to a board
+   * 
+   * @param {Object} listInfo The info of a list to be created
+   */
   addList: async (listInfo) => {
     try {
       const response = await ApiService.post('/list/', listInfo)
@@ -34,6 +44,41 @@ const BoardService = {
     }
   },
 
+  /**
+   * Retrieve the cards of a list
+   * 
+   * @param {String} listId The id of the list where cards are to be retrieved
+   */
+  retrieveCards: async (listId) => {
+    try {
+      const response = await ApiService.get(`/card/?listId=${listId}`)
+
+      return response
+    } catch (error) {
+      throw new BoardError(error.response.status, error.response.data)
+    }
+  },
+
+  /**
+   * Add a new card to a board
+   * 
+   * @param {Object} cardInfo The info of a card to be created
+   */
+  addCard: async (cardInfo) => {
+    try {
+      const response = await ApiService.post('/card/', cardInfo)
+
+      return response
+    } catch (error) {
+      throw new BoardError(error.response.status, error.response.data)
+    }
+  },
+
+  /**
+   * Add a new label to a board
+   * 
+   * @param {Object} labelInfo The info of a label to be created
+   */
   addLabel: async (labelInfo) => {
     try {
       const response = await ApiService.post('/label/', labelInfo)
@@ -44,6 +89,11 @@ const BoardService = {
     }
   },
 
+  /**
+   * Update an existing label of a board
+   * 
+   * @param {Object} labelInfo The info of a label to be updated
+   */
   updateLabel: async (labelInfo) => {
     try {
       const response = await ApiService.put(`/label/${labelInfo.id}/`, labelInfo)
@@ -54,6 +104,11 @@ const BoardService = {
     }
   },
 
+  /**
+   * Delete an existing label of a board
+   * 
+   * @param {String} labelId 
+   */
   deleteLabel: async (labelId) => {
     try {
       const response = await ApiService.delete(`/label/${labelId}/`)
@@ -62,7 +117,7 @@ const BoardService = {
     } catch (error) {
       throw new BoardError(error.response.status, error.response.data)
     }
-  }
+  },
 
 }
 

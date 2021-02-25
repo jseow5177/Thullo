@@ -5,6 +5,9 @@ import {
   UPDATE_LABEL,
   DELETE_LABEL,
   SET_LABELS,
+  ADD_CARD,
+  SET_CARDS,
+  SET_COLLABORATORS,
   SET_LAST_ACTIVE_BOARD,
   SET_ADD_LIST_LOADING,
   CLEAR_ADD_LIST_LOADING,
@@ -16,9 +19,9 @@ import {
 import BoardService from '../services/board.service'
 
 /**
- * Retrieve the lists, cards and labels of a board
- * 
- * @param {String} boardId The id of viewed board
+ * Retrieves all info about a board (including lists, cards and labels)
+ *
+ * @param {String} boardId The id of a board
  */
 export const retrieveBoard = (boardId) => async (dispatch, getState) => {
 
@@ -33,6 +36,8 @@ export const retrieveBoard = (boardId) => async (dispatch, getState) => {
 
       dispatch({ type: SET_LISTS, payload: res.data.lists })
       dispatch({ type: SET_LABELS, payload: res.data.labels })
+      // TODO: Add support for collaborators
+      dispatch({ type: SET_COLLABORATORS, payload: [{ username: 'Connie', id: 1 }, { username: 'Jon', id: 2 }] })
 
       dispatch({ type: SET_LAST_ACTIVE_BOARD, payload: boardId })
     }
@@ -51,9 +56,9 @@ export const retrieveBoard = (boardId) => async (dispatch, getState) => {
 }
 
 /**
- * Add a new list to the board
- * 
- * @param {Object} listInfo The list to be created. Has two fields: listTitle and boardId
+ * Add a new list to a board
+ *
+ * @param {Object} listInfo The info of a list to be created
  */
 export const addList = (listInfo) => async (dispatch) => {
 
@@ -79,9 +84,50 @@ export const addList = (listInfo) => async (dispatch) => {
 }
 
 /**
- * Add a new label to the board
+ * Retrieve the cards of a list
  *
- * @param {Object} labelInfo The label to be created. Has three fields: title, color and board
+ * @param {String} listId The id of the list where cards are to be retrieved
+ */
+export const retrieveCards = (listId) => async (dispatch) => {
+  try {
+    const res = await BoardService.retrieveCards(listId)
+
+    dispatch({ type: SET_CARDS, payload: { listId, cards: res.data } })
+
+    return true
+  } catch (error) {
+    // TODO: Handle error locally
+  }
+}
+
+/**
+ * Add a new card to a board
+ *
+ * @param {Object} cardInfo The info of a card to be created
+ */
+export const addCard = (cardInfo) => async (dispatch) => {
+
+  dispatch({ type: CLEAR_BOARD_ERROR })
+
+  try {
+    const res = await BoardService.addCard(cardInfo)
+
+    dispatch({ type: ADD_CARD, payload: res.data })
+
+    return true
+  } catch (error) {
+    dispatch({
+      type: SET_BOARD_ERROR,
+      payload: error
+    })
+    return false
+  }
+}
+
+/**
+ * Add a new label to a board
+ *
+ * @param {Object} labelInfo The info of a label to be created
  */
 export const addLabel = (labelInfo) => async (dispatch) => {
 
@@ -98,13 +144,14 @@ export const addLabel = (labelInfo) => async (dispatch) => {
       type: SET_BOARD_ERROR,
       payload: error
     })
+    return false
   }
 }
 
 /**
  * Update an existing label of a board
- * 
- * @param {Object} labelInfo The label to be updated. Has four fields: id, title, color, board 
+ *
+ * @param {Object} labelInfo The info of a label to be updated
  */
 export const updateLabel = (labelInfo) => async (dispatch) => {
 
@@ -121,9 +168,15 @@ export const updateLabel = (labelInfo) => async (dispatch) => {
       type: SET_BOARD_ERROR,
       payload: error
     })
+    return false
   }
 }
 
+/**
+ * Delete an existing label of a board
+ *
+ * @param {String} labelId
+ */
 export const deleteLabel = (labelId) => async (dispatch) => {
 
   dispatch({ type: CLEAR_BOARD_ERROR })
@@ -139,6 +192,7 @@ export const deleteLabel = (labelId) => async (dispatch) => {
       type: SET_BOARD_ERROR,
       payload: error
     })
+    return false
   }
 }
 
