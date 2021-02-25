@@ -46,6 +46,7 @@ function LabelsInput({ board, match, selectedLabels, onLabelSelect, removeSelect
 
   const closeLabelsInput = () => {
     setAnchorEl(null)
+    setSearchKeyword('')
   }
 
   const handleSearchKeywordChange = (keyword) => {
