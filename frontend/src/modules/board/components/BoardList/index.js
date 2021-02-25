@@ -1,4 +1,5 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
+import { connect } from 'react-redux'
 import NaturalDragAnimation from 'natural-drag-animation-rbdnd'
 import { Draggable } from 'react-beautiful-dnd'
 
@@ -8,9 +9,11 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Popover from '@material-ui/core/Popover'
+import LinearProgress from '@material-ui/core/LinearProgress'
 
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 
+import { retrieveCards } from '../../store/actions'
 import styles from './BoardList.module.scss'
 import CardInput from '../CardInput'
 
@@ -25,9 +28,25 @@ const ListTitle = ({ children, dragHandleProps, ...props }) => (
   </div>
 )
 
-const BoardList = ({ title, index }) => {
+const BoardList = ({
+  board,
+  id, // id of the list
+  title, // title of the list
+  index, // position of the list in the board
+  retrieveCards // retrive cards of the list
+}) => {
 
   const [anchorEl, setAnchorEl] = useState(null)
+  const [isRetrievingCards, setIsRetrievingCards] = useState(false)
+
+  useEffect(() => {
+    async function fetchCards() {
+      setIsRetrievingCards(true) // Loading
+      await retrieveCards(id)
+      setIsRetrievingCards(false) // Not loading
+    }
+    fetchCards()
+  }, [id, retrieveCards])
 
   const openPopover = (e) => {
     setAnchorEl(e.currentTarget)
@@ -81,7 +100,11 @@ const BoardList = ({ title, index }) => {
                       </List>
                     </Popover>
                   </ListTitle>
-                  <CardInput />
+                  {
+                    isRetrievingCards && <LinearProgress />
+                  }
+                  {/* TODO: Place cards here */}
+                  <CardInput listId={id} />
                 </ListWrapper>
               )
             }
@@ -92,4 +115,12 @@ const BoardList = ({ title, index }) => {
   )
 }
 
-export default BoardList
+const mapStateToProps = (state) => ({
+  board: state.board
+})
+
+const mapDispatchToProps = (dispatch) => ({
+  retrieveCards: (listId) => dispatch(retrieveCards(listId))
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(BoardList)
