@@ -25,7 +25,7 @@ const Actions = ({ children, ...props }) => (
   <div {...props}>{children}</div>
 )
 
-function ListInput({ match, addList, board, setSnack }) {
+function ListInput({ match, addList, board }) {
 
   const boardId = match.params.id
 
@@ -49,11 +49,6 @@ function ListInput({ match, addList, board, setSnack }) {
     const success = await addList({ board: boardId, title: listTitle })
 
     if (success) {
-      setSnack({
-        open: true,
-        message: 'List successfully created',
-        severity: 'success'
-      })
       closeListInput()
     }
   }

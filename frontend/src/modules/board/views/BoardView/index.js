@@ -61,13 +61,14 @@ function BoardView({ board, retrieveBoard, setLists, match }) {
                   board.lists.map((list, index) => (
                     <BoardList
                       key={list.id}
+                      id={list.id}
                       title={list.title}
                       index={index}
                     />
                   ))
                 }
                 {provided.placeholder}
-                <ListInput setSnack={setSnack} />
+                <ListInput />
               </DroppableContainer>
             ))
           }
