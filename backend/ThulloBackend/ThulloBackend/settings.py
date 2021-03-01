@@ -93,7 +93,7 @@ WSGI_APPLICATION = 'ThulloBackend.wsgi.application'
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 DATABASES = {
     'default': {
-        'NAME': 'thullo_db',
+        'NAME': 'thullodb',
         'ENGINE': 'django.db.backends.postgresql',
         'USER': os.getenv('POSTGRES_USER'),
         'PASSWORD': os.getenv('POSTGRES_PASSWORD'),
