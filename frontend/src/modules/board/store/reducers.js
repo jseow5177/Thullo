@@ -72,11 +72,9 @@ const reducers = (state = initialState, action) => {
         cards: { ...state.cards, [listId]: newCards }
       }
     case SET_CARDS:
-      const { listId: id, cards } = action.payload
-
       return {
         ...state,
-        cards: { ...state.cards, [id]: cards }
+        cards: action.payload
       }
     case SET_COLLABORATORS:
       const collaborators = action.payload.map(collaborator => ({

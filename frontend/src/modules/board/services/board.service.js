@@ -45,21 +45,6 @@ const BoardService = {
   },
 
   /**
-   * Retrieve the cards of a list
-   * 
-   * @param {String} listId The id of the list where cards are to be retrieved
-   */
-  retrieveCards: async (listId) => {
-    try {
-      const response = await ApiService.get(`/card/?listId=${listId}`)
-
-      return response
-    } catch (error) {
-      throw new BoardError(error.response.status, error.response.data)
-    }
-  },
-
-  /**
    * Add a new card to a board
    * 
    * @param {Object} cardInfo The info of a card to be created

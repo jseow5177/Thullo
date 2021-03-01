@@ -34,8 +34,12 @@ export const retrieveBoard = (boardId) => async (dispatch, getState) => {
     if (lastViewedBoard !== boardId) {
       const res = await BoardService.retrieveBoard(boardId)
 
+      // Save lists of board
       dispatch({ type: SET_LISTS, payload: res.data.lists })
+      // Save labels of board
       dispatch({ type: SET_LABELS, payload: res.data.labels })
+      // Save cards of board for each list
+      dispatch({ type: SET_CARDS, payload: res.data.cards })
       // TODO: Add support for collaborators
       dispatch({ type: SET_COLLABORATORS, payload: [{ username: 'Connie', id: 1 }, { username: 'Jon', id: 2 }] })
 
@@ -81,23 +85,6 @@ export const addList = (listInfo) => async (dispatch) => {
     dispatch({ type: CLEAR_ADD_LIST_LOADING })
   }
 
-}
-
-/**
- * Retrieve the cards of a list
- *
- * @param {String} listId The id of the list where cards are to be retrieved
- */
-export const retrieveCards = (listId) => async (dispatch) => {
-  try {
-    const res = await BoardService.retrieveCards(listId)
-
-    dispatch({ type: SET_CARDS, payload: { listId, cards: res.data } })
-
-    return true
-  } catch (error) {
-    // TODO: Handle error locally
-  }
 }
 
 /**
