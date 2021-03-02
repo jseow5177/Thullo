@@ -16,7 +16,7 @@
 
 .expandedPaper {
   @extend .root;
-  background-color: white;
+  background-color: $white;
 
   .closeIcon {
     color: $dark-gray;
@@ -29,7 +29,7 @@
   background-color: $light-blue !important;
 
   .searchIcon {
-    color: white;
+    color: $white;
     cursor: pointer;
   }
 }
