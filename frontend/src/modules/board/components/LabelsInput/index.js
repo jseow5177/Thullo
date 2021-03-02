@@ -23,7 +23,16 @@ import BOARD from '../../constants'
 import styles from './LabelsInput.module.scss'
 import labelColors from '../../../../assets/styles/labelColors.module.scss'
 
-function LabelsInput({ board, match, selectedLabels, onLabelSelect, removeSelectedLabel, addLabel, updateLabel, deleteLabel }) {
+function LabelsInput({
+  board,
+  match,
+  selectedLabels,
+  onLabelSelect,
+  removeSelectedLabel,
+  addLabel,
+  updateLabel,
+  deleteLabel
+}) {
 
   const boardId = match.params.id
 
