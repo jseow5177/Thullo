@@ -20,8 +20,6 @@ class LabelSerializer(serializers.ModelSerializer):
     fields = "__all__"
   
 class CardSerializer(serializers.ModelSerializer):
-  
-  labels = LabelSerializer(many=True)
 
   class Meta:
     model = Card
