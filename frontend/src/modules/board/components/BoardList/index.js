@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import NaturalDragAnimation from 'natural-drag-animation-rbdnd'
-import { Draggable } from 'react-beautiful-dnd'
+import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
+import arrayMove from 'array-move'
 
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
@@ -9,13 +10,13 @@ import List from '@material-ui/core/List'
 import ListItem from '@material-ui/core/ListItem'
 import ListItemText from '@material-ui/core/ListItemText'
 import Popover from '@material-ui/core/Popover'
-import LinearProgress from '@material-ui/core/LinearProgress'
 
 import MoreVertIcon from '@material-ui/icons/MoreVert'
 
-import { retrieveCards } from '../../store/actions'
+import { reorderCards } from '../../store/actions'
 import styles from './BoardList.module.scss'
 import CardInput from '../CardInput'
+import BoardCard from '../BoardCard'
 
 const ListWrapper = ({ children, innerRef, draggableProps, ...props }) => (
   <div ref={innerRef} {...draggableProps} {...props}>
@@ -28,25 +29,25 @@ const ListTitle = ({ children, dragHandleProps, ...props }) => (
   </div>
 )
 
+const CardsWrapper = ({ children, provided, ...props }) => (
+  <div
+    ref={provided.innerRef}
+    {...provided.droppableProps}
+    {...props}
+  >
+    {children}
+  </div>
+)
+
 const BoardList = ({
   board,
   id, // id of the list
   title, // title of the list
   index, // position of the list in the board
-  retrieveCards // retrive cards of the list
+  reorderCards, // Redux action to reorder cards within or across lists
 }) => {
 
   const [anchorEl, setAnchorEl] = useState(null)
-  const [isRetrievingCards, setIsRetrievingCards] = useState(false)
-
-  useEffect(() => {
-    async function fetchCards() {
-      setIsRetrievingCards(true) // Loading
-      await retrieveCards(id)
-      setIsRetrievingCards(false) // Not loading
-    }
-    fetchCards()
-  }, [id, retrieveCards])
 
   const openPopover = (e) => {
     setAnchorEl(e.currentTarget)
@@ -57,7 +58,7 @@ const BoardList = ({
   }
 
   return (
-    <Draggable draggableId={title} index={index}>
+    <Draggable draggableId={`${title}-${id}`} index={index}>
       {
         (provided, snapshot) => (
           <NaturalDragAnimation
@@ -100,10 +101,33 @@ const BoardList = ({
                       </List>
                     </Popover>
                   </ListTitle>
-                  {
-                    isRetrievingCards && <LinearProgress />
-                  }
-                  {/* TODO: Place cards here */}
+                  {/* <DragDropContext onDragEnd={handleDragEnd}> */}
+                  <Droppable droppableId={`${id}`} type="CARD">
+                    {
+                      (provided) => (
+                        <CardsWrapper
+                          provided={provided}
+                          className={styles.cardsWrapper}
+                        >
+                          {
+                            board.cards[id] &&
+                            board.cards[id].map((card, index) =>
+                              <BoardCard
+                                key={card.id}
+                                id={card.id}
+                                summary={card.summary}
+                                description={card.description}
+                                labels={card.label}
+                                index={index}
+                              />
+                            )
+                          }
+                          {provided.placeholder}
+                        </CardsWrapper>
+                      )
+                    }
+                  </Droppable>
+                  {/* </DragDropContext> */}
                   <CardInput listId={id} />
                 </ListWrapper>
               )
@@ -111,7 +135,7 @@ const BoardList = ({
           </NaturalDragAnimation>
         )
       }
-    </Draggable>
+    </Draggable >
   )
 }
 
@@ -120,7 +144,7 @@ const mapStateToProps = (state) => ({
 })
 
 const mapDispatchToProps = (dispatch) => ({
-  retrieveCards: (listId) => dispatch(retrieveCards(listId))
+  reorderCards: (destination, source) => dispatch(reorderCards(destination, source))
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(BoardList)
