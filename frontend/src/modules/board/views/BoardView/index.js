@@ -8,7 +8,7 @@ import BoardList from '../../components/BoardList'
 import ListInput from '../../components/ListInput'
 import SnackAlert from '../../../../components/CustomMaterialUI/SnackAlert'
 
-import { retrieveBoard, setLists } from '../../store/actions'
+import { retrieveBoard, reorderLists, reorderCards } from '../../store/actions'
 import styles from './BoardView.module.scss'
 
 const DroppableContainer = ({ children, provided }) => (
@@ -21,7 +21,7 @@ const DroppableContainer = ({ children, provided }) => (
   </div>
 )
 
-function BoardView({ board, retrieveBoard, setLists, match }) {
+function BoardView({ board, retrieveBoard, reorderLists, reorderCards, match }) {
 
   const boardId = match.params.id
 
@@ -45,15 +45,47 @@ function BoardView({ board, retrieveBoard, setLists, match }) {
     setSnack({ open: false, message: '', severity: 'error' })
   }
 
-  const handleDragEnd = ({ destination, source }) => {
-    const reorderedLists = arrayMove(board.lists, source.index, destination.index)
-    setLists(reorderedLists)
+  const handleDragEnd = (props) => {
+    const { destination, source, type } = props
+
+    // When dragged out of range
+    if (!destination) {
+      return
+    }
+
+    // When dropped in the same location
+    if (
+      destination.droppableId === source.droppableId &&
+      destination.index === source.index
+    ) {
+      return
+    }
+
+    if (type === 'LIST') {
+      const reorderedLists = arrayMove(board.lists, source.index, destination.index)
+      reorderLists(reorderedLists)
+    } else if (type === 'CARD') {
+      const destinationListId = Number(destination.droppableId)
+      const sourceListId = Number(source.droppableId)
+
+      const destinationCards = board.cards[destinationListId] // Get cards of destination list
+      const sourceCards = board.cards[sourceListId] // Get cards of source list
+
+      const draggedCard = sourceCards.splice(source.index, 1)[0] // Remove dragged card from source
+      draggedCard.board_list = destinationListId
+      destinationCards.splice(destination.index, 0, draggedCard) // Add dragged card to destination
+
+      const destinationObj = { listId: destinationListId, cards: destinationCards }
+      const sourceObj = { listId: sourceListId, cards: sourceCards }
+
+      reorderCards(destinationObj, sourceObj)
+    }
   }
 
   return (
     <>
       <DragDropContext onDragEnd={handleDragEnd}>
-        <Droppable droppableId="board" direction="horizontal">
+        <Droppable droppableId="board" direction="horizontal" type="LIST">
           {
             (provided => (
               <DroppableContainer provided={provided}>
@@ -91,7 +123,8 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   retrieveBoard: (boardId) => dispatch(retrieveBoard(boardId)),
-  setLists: (lists) => dispatch(setLists(lists))
+  reorderLists: (lists) => dispatch(reorderLists(lists)),
+  reorderCards: (destination, source) => dispatch(reorderCards(destination, source))
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BoardView))
