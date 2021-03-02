@@ -47,6 +47,20 @@ class BoardViewSet(ModelViewSet):
     boardLabels = Label.objects.filter(board=pk).order_by('id')
     boardInfo['labels'] = LabelSerializer(boardLabels, many=True).data
 
+    # Retrieve board cards
+    cards = {}
+    boardCards = Card.objects.filter(board_list__in=boardLists)
+    for card in boardCards:
+      listId = card.board_list.id
+      serialized_card = CardSerializer(card).data
+      # Group cards according to listId
+      if listId in cards:
+        cards[listId].append(serialized_card)
+      else:
+        cards[listId] = [serialized_card]
+
+    boardInfo['cards'] = cards
+
     return Response(data=boardInfo, status=status.HTTP_200_OK)
 
   @transaction.atomic
@@ -114,113 +128,3 @@ class BoardViewSet(ModelViewSet):
       serializer.save()
     
     return
-
-class ListViewSet(ModelViewSet):
-  """
-  A viewset for lists
-  """
-  serializer_class = ListSerializer
-
-  def create(self, request):
-    """
-    Create a list for a board
-    """
-    # Check if data is valid with serializer
-    serializer = self.get_serializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-
-    # Save list
-    serializer.save()
-
-    return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-  
-class LabelViewSet(ModelViewSet):
-  """
-  A viewset for labels
-  """
-  serializer_class = LabelSerializer
-
-  def get_queryset(self):
-    queryset = Label.objects.all()
-    return queryset
-
-  def create(self, request):
-    """
-    Create a new label for a board
-    """
-    # Check if data is valid with serializer
-    serializer = self.get_serializer(data=request.data)
-    serializer.is_valid(raise_exception=True)
-
-    # Save label
-    serializer.save()
-
-    return Response(data=serializer.data, status=status.HTTP_201_CREATED)
-  
-  def update(self, request, pk=None):
-    """
-    Update an existing label of a board
-    """
-    label = Label.objects.get(pk=pk)
-
-    # Check if data is valid with serializer
-    serializer = self.get_serializer(label, data=request.data)
-    serializer.is_valid(raise_exception=True)
-
-    # Save existing label
-    serializer.save()
-
-    return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-  def delete(self, request, pk, format=None):
-
-    label = Label.objects.filter(pk=pk)
-
-    label.delete()
-
-    return Response(status=status.HTTP_204_NO_CONTENT)
-
-class CardViewSet(ModelViewSet):
-  """
-  A viewset for cards
-  """
-  serializer_class = CardSerializer
-
-  def get_queryset(self):
-    queryset = Card.objects.all()
-    return queryset
-  
-  def list(self, request):
-    list_id = request.GET.get('listId')
-
-    cards = self.get_queryset().filter(board_list=list_id)
-    serializer = self.get_serializer(cards, many=True)
-
-    return Response(data=serializer.data, status=status.HTTP_200_OK)
-
-  @transaction.atomic
-  def create(self, request):
-    """
-    Create a new card for a list in a board
-    """
-    card_labels = request.data.get("labels")
-
-    card_data = {
-      "summary": request.data.get("summary"),
-      "description": request.data.get("description"),
-      "board_list": request.data.get("listId")
-    }
-
-    # Check if data is valid with serializer
-    serializer = self.get_serializer(data=card_data)
-    serializer.is_valid(raise_exception=True)
-
-    # Save new card
-    card = serializer.save()
-
-    # Get the labels related to the card
-    related_labels = Label.objects.filter(id__in=card_labels).only("id")
-    # Save the labels
-    card.labels.add(*related_labels)
-
-    return Response(data=serializer.data, status=status.HTTP_201_CREATED)

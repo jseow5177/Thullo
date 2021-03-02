@@ -3,7 +3,10 @@ from django.conf.urls import include
 
 from rest_framework import routers
 
-from home.views import BoardViewSet, ListViewSet, LabelViewSet, CardViewSet
+from home.views.board_view import BoardViewSet
+from home.views.card_view import CardViewSet
+from home.views.list_view import ListViewSet
+from home.views.label_view import LabelViewSet
 
 router = routers.DefaultRouter()
 router.register(r'board', BoardViewSet, basename='board')
