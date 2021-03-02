@@ -7,6 +7,7 @@ import {
   SET_LABELS,
   ADD_CARD,
   SET_CARDS,
+  REORDER_CARDS,
   SET_COLLABORATORS,
   SET_LAST_ACTIVE_BOARD,
   SET_ADD_LIST_LOADING,
@@ -188,6 +189,16 @@ export const deleteLabel = (labelId) => async (dispatch) => {
  * 
  * @param {Array} lists An array of lists of a board
  */
-export const setLists = (lists) => {
+export const reorderLists = (lists) => {
   return { type: SET_LISTS, payload: lists }
+}
+
+
+/**
+ * Set cards in an order
+ *
+ * @param {Array} cards An array of cards in a list
+ */
+export const reorderCards = (destination, source) => {
+  return { type: REORDER_CARDS, payload: { destination, source } }
 }

@@ -8,6 +8,7 @@ export const SET_LABELS = 'SET_LABELS'
 
 export const ADD_CARD = 'ADD_CARD'
 export const SET_CARDS = 'SET_CARDS'
+export const REORDER_CARDS = 'REORDER_CARDS'
 
 export const SET_COLLABORATORS = 'SET_COLLABORATORS'
 

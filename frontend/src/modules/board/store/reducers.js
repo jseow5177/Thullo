@@ -7,6 +7,7 @@ import {
   SET_LABELS,
   ADD_CARD,
   SET_CARDS,
+  REORDER_CARDS,
   SET_COLLABORATORS,
   SET_LAST_ACTIVE_BOARD,
   SET_ADD_LIST_LOADING,
@@ -23,7 +24,8 @@ const reducers = (state = initialState, action) => {
     case ADD_LIST:
       return {
         ...state,
-        lists: [...state.lists, action.payload]
+        lists: [...state.lists, action.payload],
+        cards: { ...state.cards, [action.payload.id]: [] } // New key
       }
     case SET_LISTS:
       return {
@@ -58,23 +60,28 @@ const reducers = (state = initialState, action) => {
       }
     case ADD_CARD:
       const listId = action.payload.board_list
-      let newCards
-
-      if (listId in state.cards) { // If there is an existing list with cards, add new card into it
-        const existingCards = state.cards.listId
-        newCards = [...existingCards, action.payload]
-      } else { // If it is a new list, initialise its array of cards
-        newCards = [action.payload]
-      }
+      const existingCards = state.cards[listId]
 
       return {
         ...state,
-        cards: { ...state.cards, [listId]: newCards }
+        cards: { ...state.cards, [listId]: [...existingCards, action.payload] }
       }
     case SET_CARDS:
       return {
         ...state,
         cards: action.payload
+      }
+    case REORDER_CARDS:
+      const destination = action.payload.destination
+      const source = action.payload.source
+
+      return {
+        ...state,
+        cards: {
+          ...state.cards,
+          [destination.listId]: destination.cards,
+          [source.listId]: source.cards
+        }
       }
     case SET_COLLABORATORS:
       const collaborators = action.payload.map(collaborator => ({
