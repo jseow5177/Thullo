@@ -49,15 +49,11 @@ class BoardViewSet(ModelViewSet):
 
     # Retrieve board cards
     cards = {}
-    boardCards = Card.objects.filter(board_list__in=boardLists)
-    for card in boardCards:
-      listId = card.board_list.id
-      serialized_card = CardSerializer(card).data
-      # Group cards according to listId
-      if listId in cards:
-        cards[listId].append(serialized_card)
-      else:
-        cards[listId] = [serialized_card]
+    for boardList in boardLists:
+      listId = boardList.id
+      boardCards = Card.objects.filter(board_list=listId)
+      serialized_cards = CardSerializer(boardCards, many=True).data
+      cards[listId] = serialized_cards
 
     boardInfo['cards'] = cards
 
