@@ -40,7 +40,7 @@ class BoardViewSet(ModelViewSet):
     # TODO: Retrive board info. Throw 404 when not found
 
     # Retrieve board lists
-    boardLists = List.objects.filter(board=pk)
+    boardLists = List.objects.filter(board=pk).order_by('order')
     boardInfo['lists'] = ListSerializer(boardLists, many=True).data
 
     # Retrieve board labels
@@ -51,7 +51,7 @@ class BoardViewSet(ModelViewSet):
     cards = {}
     for boardList in boardLists:
       listId = boardList.id
-      boardCards = Card.objects.filter(board_list=listId)
+      boardCards = Card.objects.filter(board_list=listId).order_by('order')
       serialized_cards = CardSerializer(boardCards, many=True).data
       cards[listId] = serialized_cards
 
