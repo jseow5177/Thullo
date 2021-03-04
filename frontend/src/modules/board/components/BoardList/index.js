@@ -1,8 +1,7 @@
 import React, { useState } from 'react'
 import { connect } from 'react-redux'
 import NaturalDragAnimation from 'natural-drag-animation-rbdnd'
-import { DragDropContext, Droppable, Draggable } from 'react-beautiful-dnd'
-import arrayMove from 'array-move'
+import { Droppable, Draggable } from 'react-beautiful-dnd'
 
 import Typography from '@material-ui/core/Typography'
 import IconButton from '@material-ui/core/IconButton'
@@ -101,7 +100,6 @@ const BoardList = ({
                       </List>
                     </Popover>
                   </ListTitle>
-                  {/* <DragDropContext onDragEnd={handleDragEnd}> */}
                   <Droppable droppableId={`${id}`} type="CARD">
                     {
                       (provided) => (
@@ -127,7 +125,6 @@ const BoardList = ({
                       )
                     }
                   </Droppable>
-                  {/* </DragDropContext> */}
                   <CardInput listId={id} />
                 </ListWrapper>
               )
