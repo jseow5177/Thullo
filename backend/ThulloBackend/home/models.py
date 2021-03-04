@@ -16,6 +16,7 @@ class Board(models.Model):
 
 class List(models.Model):
   title = models.CharField(max_length=50, blank=False, null=False)
+  order = models.PositiveIntegerField(blank=False, null=False)
 
   board = models.ForeignKey(Board, on_delete=models.CASCADE)
 
@@ -34,6 +35,7 @@ class Label(models.Model):
 class Card(models.Model):
   summary = models.TextField(blank=False, null=False)
   description = models.TextField(blank=True, null=False)
+  order = models.PositiveIntegerField(blank=False, null=False)
 
   board_list = models.ForeignKey(List, on_delete=models.CASCADE)
   label = models.ManyToManyField(Label, blank=True)
