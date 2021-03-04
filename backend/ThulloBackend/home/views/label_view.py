@@ -11,10 +11,6 @@ class LabelViewSet(ModelViewSet):
   """
   serializer_class = LabelSerializer
 
-  def get_queryset(self):
-    queryset = Label.objects.all()
-    return queryset
-
   def create(self, request):
     """
     Create a new label for a board
