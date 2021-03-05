@@ -9,14 +9,13 @@ class LabelViewSet(ModelViewSet):
   """
   A viewset for labels
   """
-  serializer_class = LabelSerializer
 
   def create(self, request):
     """
     Create a new label for a board
     """
     # Check if data is valid with serializer
-    serializer = self.get_serializer(data=request.data)
+    serializer = LabelSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
     # Save label
@@ -31,7 +30,7 @@ class LabelViewSet(ModelViewSet):
     label = Label.objects.get(pk=pk)
 
     # Check if data is valid with serializer
-    serializer = self.get_serializer(label, data=request.data)
+    serializer = LabelSerializer(label, data=request.data)
     serializer.is_valid(raise_exception=True)
 
     # Save existing label

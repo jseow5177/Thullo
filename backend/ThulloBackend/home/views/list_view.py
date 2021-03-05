@@ -12,7 +12,6 @@ class ListViewSet(ModelViewSet):
   """
   A viewset for lists
   """
-  serializer_class = ListSerializer
 
   def create(self, request):
     """
@@ -22,7 +21,7 @@ class ListViewSet(ModelViewSet):
     request.data['order'] = number_of_lists
 
     # Check if data is valid with serializer
-    serializer = self.get_serializer(data=request.data)
+    serializer = ListSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
 
     # Save list

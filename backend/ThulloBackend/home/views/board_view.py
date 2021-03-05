@@ -15,11 +15,9 @@ class BoardViewSet(ModelViewSet):
   A viewset for boards
   """
 
-  serializer_class = BoardSerializer
-
   def list(self, request):
     user_boards = Board.objects.all().filter(owner=request.user.id).order_by('order')
-    serializer = self.get_serializer(user_boards, many=True)
+    serializer = BoardSerializer(user_boards, many=True, exclude_fields=['order'])
 
     return Response(data=serializer.data, status=status.HTTP_200_OK)
   
@@ -37,18 +35,18 @@ class BoardViewSet(ModelViewSet):
 
     # Retrieve board lists
     boardLists = List.objects.filter(board=pk).order_by('order')
-    boardInfo['lists'] = ListSerializer(boardLists, many=True).data
+    boardInfo['lists'] = ListSerializer(boardLists, many=True, exclude_fields=['order']).data
 
     # Retrieve board labels
     boardLabels = Label.objects.filter(board=pk).order_by('id')
-    boardInfo['labels'] = LabelSerializer(boardLabels, many=True).data
+    boardInfo['labels'] = LabelSerializer(boardLabels, many=True, exclude_fields=['board']).data
 
     # Retrieve board cards
     cards = {}
     for boardList in boardLists:
       listId = boardList.id
       boardCards = Card.objects.filter(board_list=listId).order_by('order')
-      serialized_cards = CardSerializer(boardCards, many=True).data
+      serialized_cards = CardSerializer(boardCards, many=True, exclude_fields=['order', 'board_list']).data
       cards[listId] = serialized_cards
 
     boardInfo['cards'] = cards
@@ -78,7 +76,7 @@ class BoardViewSet(ModelViewSet):
     }
 
     # Check if data is valid with serializer
-    serializer = self.get_serializer(data=board_data)
+    serializer = BoardSerializer(data=board_data)
     serializer.is_valid(raise_exception=True)
 
     # Save board

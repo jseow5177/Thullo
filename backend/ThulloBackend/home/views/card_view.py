@@ -13,7 +13,6 @@ class CardViewSet(ModelViewSet):
   """
   A viewset for cards
   """
-  serializer_class = CardSerializer
 
   @transaction.atomic
   def create(self, request):
@@ -32,7 +31,7 @@ class CardViewSet(ModelViewSet):
     }
 
     # Check if data is valid with serializer
-    serializer = self.get_serializer(data=card_data)
+    serializer = CardSerializer(data=card_data)
     serializer.is_valid(raise_exception=True)
 
     # Save new card
