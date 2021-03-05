@@ -17,7 +17,8 @@ class ListViewSet(ModelViewSet):
     """
     Create a list for a board
     """
-    number_of_lists = List.objects.all().count()
+    board_id = request.data.get('board')
+    number_of_lists = List.objects.filter(board_id=board_id).count()
     request.data['order'] = number_of_lists
 
     # Check if data is valid with serializer
