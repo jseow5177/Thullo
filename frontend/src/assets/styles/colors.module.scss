@@ -9,7 +9,7 @@ $light-black: rgba(0, 0, 0, .15);
 $dark-black: rgba(0, 0, 0, .20);
 $black: #000;
 $white: #FFF;
-$text-black: rgba(0, 0, 0, 0.87);
+$medium-black: rgba(0, 0, 0, 0.87);
 
 // Material UI
 $default: rgba(0, 0, 0, 0.23);
@@ -17,3 +17,10 @@ $primary-blue: #3f51b5;
 $secondary-red: #f50057;
 $dark-secondary-red: #c51162;
 $placeholder-gray: #d3d3d3;
+
+:export {
+  PrimaryBlue: $primary-blue;
+  Black: $black;
+  VeryLightBlue: $very-light-blue;
+  White: $white;
+}
