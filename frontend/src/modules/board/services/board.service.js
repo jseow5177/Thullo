@@ -104,6 +104,39 @@ const BoardService = {
     }
   },
 
+  /**
+   * Switch the order of a list
+   * 
+   * @param {Object} listInfo The info about a list's order switching. Contains id (list id), source index
+   * and destination index
+   */
+  switchListOrder: async (listInfo) => {
+    try {
+      const response = await ApiService.put('/list/switch_order/', listInfo)
+
+      return response
+    } catch (error) {
+      throw new BoardError(error.response.status, error.response.data)
+    }
+  },
+
+
+  /**
+   * Switch the order of a card. Could happen between lists
+   * 
+   * @param {Object} cardInfo The info about a card's order switching. Contains id (card id), source 
+   * (has listId and source index) and destination (has listId and destination index)
+   */
+  switchCardOrder: async (cardInfo) => {
+    try {
+      const response = await ApiService.put('/card/switch_order/', cardInfo)
+
+      return response
+    } catch (error) {
+      throw new BoardError(error.response.status, error.response.data)
+    }
+  }
+
 }
 
 export default BoardService

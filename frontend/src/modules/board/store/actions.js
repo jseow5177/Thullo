@@ -185,6 +185,26 @@ export const deleteLabel = (labelId) => async (dispatch) => {
 }
 
 /**
+ * Switch the order of a list
+ *
+ * @param {Object} listInfo The info about a list's order switching. Contains id (list id), source index
+ * and destination index
+ */
+export const switchListOrder = (listInfo) => async (dispatch) => {
+  try {
+    await BoardService.switchListOrder(listInfo)
+
+    return true
+  } catch (error) {
+    dispatch({
+      type: SET_BOARD_ERROR,
+      payload: error
+    })
+    return false
+  }
+}
+
+/**
  * Set lists in an order
  * 
  * @param {Array} lists An array of lists of a board
@@ -193,6 +213,24 @@ export const reorderLists = (lists) => {
   return { type: SET_LISTS, payload: lists }
 }
 
+/**
+ * Switch the order of a card. Could happen between lists
+ * @param {Object} cardInfo The info about a card's order switching. Contains id (card id), source
+ * (has listId and source index) and destination (has listId and destination index)
+*/
+export const switchCardOrder = (cardInfo) => async (dispatch) => {
+  try {
+    await BoardService.switchCardOrder(cardInfo)
+
+    return true
+  } catch (error) {
+    dispatch({
+      type: SET_BOARD_ERROR,
+      payload: error
+    })
+    return false
+  }
+}
 
 /**
  * Set cards in an order
