@@ -39,14 +39,20 @@ class ListViewSet(ModelViewSet):
     source = request.data.get('source')
     destination = request.data.get('destination')
 
+    board_id_of_list = List.objects.get(id=list_id).board_id
+
     if destination > source: # List is dragged to the back
       # Decrement the order of lists located between source (exclusive) and destination (inclusive)
-      List.objects.filter(order__gt=source, order__lte=destination).update(order=F('order') - 1)
+      List.objects \
+        .filter(board_id=board_id_of_list, order__gt=source, order__lte=destination) \
+        .update(order=F('order') - 1)
     elif destination < source: # List is dragged to the front
       # Increment the order of lists located between destination (exclusive) and source (inclusive)
-      List.objects.filter(order__gte=destination, order__lt=source).update(order=F('order') + 1)
+      List.objects \
+        .filter(board_id=board_id_of_list, order__gte=destination, order__lt=source) \
+        .update(order=F('order') + 1)
 
-    # Change the order of dragged board
+    # Change the order of dragged list
     List.objects.filter(pk=list_id).update(order=destination)
 
-    return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_204_NO_CONTENT)
