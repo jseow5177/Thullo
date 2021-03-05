@@ -72,4 +72,4 @@ class CardViewSet(ModelViewSet):
       # Change the order of dragged card and the list it belongs
       Card.objects.filter(pk=card_id).update(order=destination['order'], board_list=destination['id'])
 
-    return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_204_NO_CONTENT)
