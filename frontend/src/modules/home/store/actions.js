@@ -49,9 +49,6 @@ export const retrieveBoards = () => async (dispatch) => {
   try {
     const res = await HomeService.retrieveBoards()
 
-    // Sort board by orders
-    res.data.sort((x, y) => (x.order > y.order) ? 1 : -1)
-
     dispatch({ type: SET_BOARDS, payload: res.data })
 
     return true
@@ -72,7 +69,7 @@ export const retrieveBoards = () => async (dispatch) => {
  * 
  * @param {Array} boards The boards to be saved into store
  */
-export const setBoards = (boards) => {
+export const reorderBoards = (boards) => {
   return { type: SET_BOARDS, payload: boards }
 }
 
@@ -84,6 +81,8 @@ export const setBoards = (boards) => {
 export const switchOrder = (boardIndex) => async (_) => {
   try {
     await HomeService.switchOrder(boardIndex)
+
+    return true
   } catch (error) {
     // No need to display error
     return false
