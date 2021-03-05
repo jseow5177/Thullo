@@ -8,7 +8,7 @@ import BoardList from '../../components/BoardList'
 import ListInput from '../../components/ListInput'
 import SnackAlert from '../../../../components/CustomMaterialUI/SnackAlert'
 
-import { retrieveBoard, reorderLists, reorderCards } from '../../store/actions'
+import { retrieveBoard, reorderLists, reorderCards, switchListOrder, switchCardOrder } from '../../store/actions'
 import styles from './BoardView.module.scss'
 
 const DroppableContainer = ({ children, provided }) => (
@@ -21,7 +21,15 @@ const DroppableContainer = ({ children, provided }) => (
   </div>
 )
 
-function BoardView({ board, retrieveBoard, reorderLists, reorderCards, match }) {
+function BoardView({
+  board,
+  match,
+  retrieveBoard,
+  reorderLists,
+  switchListOrder,
+  reorderCards,
+  switchCardOrder
+}) {
 
   const boardId = match.params.id
 
@@ -46,7 +54,9 @@ function BoardView({ board, retrieveBoard, reorderLists, reorderCards, match }) 
   }
 
   const handleDragEnd = (props) => {
-    const { destination, source, type } = props
+    const { destination, source, type, draggableId } = props
+
+    const draggedItemId = draggableId.split('-')[1]
 
     // When dragged out of range
     if (!destination) {
@@ -63,7 +73,13 @@ function BoardView({ board, retrieveBoard, reorderLists, reorderCards, match }) 
 
     if (type === 'LIST') {
       const reorderedLists = arrayMove(board.lists, source.index, destination.index)
-      reorderLists(reorderedLists)
+      // Change in frontend layout will be decoupled from backend changes to reduce latency
+      reorderLists(reorderedLists) // Frontend Vuex change
+      switchListOrder({ // Backend DB change
+        id: draggedItemId,
+        source: source.index,
+        destination: destination.index
+      })
     } else if (type === 'CARD') {
       const destinationListId = Number(destination.droppableId)
       const sourceListId = Number(source.droppableId)
@@ -79,6 +95,11 @@ function BoardView({ board, retrieveBoard, reorderLists, reorderCards, match }) 
       const sourceObj = { listId: sourceListId, cards: sourceCards }
 
       reorderCards(destinationObj, sourceObj)
+      switchCardOrder({
+        id: draggedItemId,
+        source: { id: sourceListId, order: source.index },
+        destination: { id: destinationListId, order: destination.index }
+      })
     }
   }
 
@@ -124,7 +145,9 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => ({
   retrieveBoard: (boardId) => dispatch(retrieveBoard(boardId)),
   reorderLists: (lists) => dispatch(reorderLists(lists)),
-  reorderCards: (destination, source) => dispatch(reorderCards(destination, source))
+  reorderCards: (destination, source) => dispatch(reorderCards(destination, source)),
+  switchListOrder: (listInfo) => dispatch(switchListOrder(listInfo)),
+  switchCardOrder: (cardInfo) => dispatch(switchCardOrder(cardInfo))
 })
 
 export default withRouter(connect(mapStateToProps, mapDispatchToProps)(BoardView))
