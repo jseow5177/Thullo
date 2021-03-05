@@ -57,7 +57,7 @@ const BoardList = ({
   }
 
   return (
-    <Draggable draggableId={`${title}-${id}`} index={index}>
+    <Draggable draggableId={`list-${id}`} index={index}>
       {
         (provided, snapshot) => (
           <NaturalDragAnimation
