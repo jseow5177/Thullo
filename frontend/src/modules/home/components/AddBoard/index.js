@@ -84,13 +84,10 @@ function AddBoard({ addBoard, setSnack, home }) {
   const submitBoardInfo = async () => {
     const boardFormData = new FormData()
 
-    const lastBoard = home.boards[home.boards.length - 1]
-
     boardFormData.append('title', boardInfo.title)
     boardFormData.append('about', boardInfo.about)
     boardFormData.append('color', boardInfo.color)
     boardFormData.append('image', boardInfo.image)
-    boardFormData.append('order', lastBoard ? lastBoard.order + 1 : 1)
     boardFormData.append('labels', JSON.stringify(getBoardDefaultLabels()))
 
     const success = await addBoard(boardFormData)
