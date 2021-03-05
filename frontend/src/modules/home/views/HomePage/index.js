@@ -8,7 +8,7 @@ import AddBoard from '../../components/AddBoard'
 import Board from '../../components/Board'
 import SnackAlert from '../../../../components/CustomMaterialUI/SnackAlert'
 
-import { retrieveBoards, setBoards, switchOrder } from '../../store/actions'
+import { retrieveBoards, reorderBoards, switchOrder } from '../../store/actions'
 import styles from './HomePage.module.scss'
 
 const Boards = SortableContainer(({ children }) => (
@@ -17,7 +17,7 @@ const Boards = SortableContainer(({ children }) => (
   </div>
 ))
 
-function HomePage({ retrieveBoards, setBoards, switchOrder, home }) {
+function HomePage({ retrieveBoards, reorderBoards, switchOrder, home }) {
 
   const [snack, setSnack] = useState({
     open: false,
@@ -39,31 +39,18 @@ function HomePage({ retrieveBoards, setBoards, switchOrder, home }) {
     }
   }, [home.error])
 
-  const handleDrag = async ({ oldIndex, newIndex }) => {
-    if (oldIndex !== newIndex) { // Do nothing when board is dropped at the same place
-      const newBoards = arrayMove(home.boards, oldIndex, newIndex)
+  const handleDrag = ({ oldIndex: source, newIndex: destination }) => {
+    if (destination !== source) { // Do nothing when board is dropped at the same place
+      const newBoards = arrayMove(home.boards, source, destination)
 
-      const draggedBoard = newBoards[newIndex]
+      const draggedBoard = newBoards[destination]
 
-      if (newIndex === newBoards.length - 1) { // Board is moved to the end
-        const secondLastBoard = newBoards[newIndex - 1]
-        draggedBoard.order = secondLastBoard.order + 1
-      } else { // Board is moved to anywhere in the middle
-        const boardAfter = newBoards[newIndex + 1]
-        draggedBoard.order = boardAfter.order
-      }
-
-      // Increment the orders of all board after dragged board
-      const allBoardsAfter = newBoards.splice(newIndex + 1)
-      allBoardsAfter.forEach(board => board.order += 1)
-
-      // await not required. Else will have lag will UI response
+      reorderBoards(newBoards)
       switchOrder({
-        board: draggedBoard.id,
-        order: draggedBoard.order
+        id: draggedBoard.id,
+        source,
+        destination
       })
-
-      setBoards([...newBoards, ...allBoardsAfter])
     }
   }
 
@@ -94,7 +81,7 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
   retrieveBoards: () => dispatch(retrieveBoards()),
-  setBoards: (boards) => dispatch(setBoards(boards)),
+  reorderBoards: (boards) => dispatch(reorderBoards(boards)),
   switchOrder: (boardIndex) => dispatch(switchOrder(boardIndex))
 })
 

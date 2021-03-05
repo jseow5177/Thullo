@@ -17,12 +17,8 @@ class BoardViewSet(ModelViewSet):
 
   serializer_class = BoardSerializer
 
-  def get_queryset(self):
-    queryset = Board.objects.all()
-    return queryset
-
   def list(self, request):
-    user_boards = self.get_queryset().filter(owner=request.user.id)
+    user_boards = Board.objects.all().filter(owner=request.user.id).order_by('order')
     serializer = self.get_serializer(user_boards, many=True)
 
     return Response(data=serializer.data, status=status.HTTP_200_OK)
@@ -63,6 +59,7 @@ class BoardViewSet(ModelViewSet):
   def create(self, request):
 
     current_user = request.user
+    number_of_user_boards = Board.objects.filter(owner_id=current_user.id).count()
 
     # Read InMemoryFile as binary data
     image = request.data.get("image")
@@ -77,7 +74,7 @@ class BoardViewSet(ModelViewSet):
       "color": request.data.get("color"),
       "image": image_binary,
       "owner": current_user.id, # Add owner field
-      "order": request.data.get("order")
+      "order": number_of_user_boards
     }
 
     # Check if data is valid with serializer
@@ -95,21 +92,30 @@ class BoardViewSet(ModelViewSet):
 
     return Response(data=serializer.data, status=status.HTTP_201_CREATED)
 
+  @transaction.atomic
   @action(methods=['put'], detail=False)
   def switch_order(self, request):
     """
     Switch the order of boards when a board is dragged to another position
     """
-    boardId = request.data['board']
-    boardOrder = request.data['order']
+    current_user_id = request.user.id
+    board_id = request.data.get('id')
+    source = request.data.get('source')
+    destination = request.data.get('destination')
 
-    # Increment the order of boards after the dragged board
-    Board.objects.filter(order__gte=boardOrder).update(order=F('order') + 1)
+    if destination > source:
+      Board.objects \
+        .filter(owner_id=current_user_id, order__gt=source, order__lte=destination) \
+        .update(order=F('order') - 1)
+    elif destination < source:
+      Board.objects \
+        .filter(owner_id=current_user_id, order__gte=destination, order__lt=source) \
+        .update(order=F('order') + 1)
+    
+    # Change the order of dragged board
+    Board.objects.filter(pk=board_id).update(order=destination)
 
-    # Update order of board
-    Board.objects.filter(pk=boardId).update(order=boardOrder)
-
-    return Response(status=status.HTTP_200_OK)
+    return Response(status=status.HTTP_204_NO_CONTENT)
 
   def save_default_labels(self, labels, boardId):
     """
