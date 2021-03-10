@@ -45,6 +45,36 @@ const BoardService = {
   },
 
   /**
+   * Update an existing list of a board
+   * 
+   * @param {Object} listInfo 
+   */
+  updateList: async (listInfo) => {
+    try {
+      const response = await ApiService.put(`/list/${listInfo.id}/`, listInfo)
+
+      return response
+    } catch (error) {
+      throw new BoardError(error.response.status, error.response.data)
+    }
+  },
+
+  /**
+   * Delete an existing list of a board
+   * 
+   * @param {String} listId 
+   */
+  deleteList: async (listId) => {
+    try {
+      const response = await ApiService.delete(`/list/${listId}/`)
+
+      return response
+    } catch (error) {
+      throw new BoardError(error.response.status, error.response.data)
+    }
+  },
+
+  /**
    * Add a new card to a board
    * 
    * @param {Object} cardInfo The info of a card to be created

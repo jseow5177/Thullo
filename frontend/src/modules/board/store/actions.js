@@ -1,5 +1,7 @@
 import {
   ADD_LIST,
+  UPDATE_LIST,
+  DELETE_LIST,
   SET_LISTS,
   ADD_LABEL,
   UPDATE_LABEL,
@@ -33,6 +35,12 @@ export const retrieveBoard = (boardId) => async (dispatch, getState) => {
   try {
     // Only retrieve when the different from the last viewed board
     if (lastViewedBoard !== boardId) {
+      // Clear existing data
+      dispatch({ type: SET_LISTS, payload: [] })
+      dispatch({ type: SET_LABELS, payload: [] })
+      dispatch({ type: SET_CARDS, payload: {} })
+      dispatch({ type: SET_COLLABORATORS, payload: [] })
+
       const res = await BoardService.retrieveBoard(boardId)
 
       // Save lists of board
@@ -86,6 +94,55 @@ export const addList = (listInfo) => async (dispatch) => {
     dispatch({ type: CLEAR_ADD_LIST_LOADING })
   }
 
+}
+
+/**
+ * Update an existing list of a board
+ *
+ * @param {Object} listInfo
+ */
+export const updateList = (listInfo) => async (dispatch) => {
+
+  dispatch({ type: CLEAR_BOARD_ERROR })
+
+  try {
+    // Decouple backend update from frontend for smooth UX
+    dispatch({ type: UPDATE_LIST, payload: listInfo })
+
+    await BoardService.updateList(listInfo)
+
+    return true
+  } catch (error) {
+    dispatch({
+      type: SET_BOARD_ERROR,
+      payload: error
+    })
+    return false
+  }
+}
+
+/**
+ * Delete an existing list of a board
+ *
+ * @param {String} listId
+ */
+export const deleteList = (listId) => async (dispatch) => {
+
+  dispatch({ type: CLEAR_BOARD_ERROR })
+
+  try {
+    await BoardService.deleteList(listId)
+
+    dispatch({ type: DELETE_LIST, payload: listId })
+
+    return true
+  } catch (error) {
+    dispatch({
+      type: SET_BOARD_ERROR,
+      payload: error
+    })
+    return false
+  }
 }
 
 /**
