@@ -1,5 +1,7 @@
 import {
   ADD_LIST,
+  UPDATE_LIST,
+  DELETE_LIST,
   SET_LISTS,
   ADD_LABEL,
   UPDATE_LABEL,
@@ -27,6 +29,24 @@ const reducers = (state = initialState, action) => {
         lists: [...state.lists, action.payload],
         cards: { ...state.cards, [action.payload.id]: [] } // New key
       }
+    case UPDATE_LIST: {
+      const indexOfUpdatedList = state.lists.findIndex(list => list.id === action.payload.id)
+      const newListsAfterUpdate = [...state.lists]
+      newListsAfterUpdate[indexOfUpdatedList] = action.payload
+
+      return {
+        ...state,
+        lists: newListsAfterUpdate
+      }
+    }
+    case DELETE_LIST: {
+      const newListsAfterDelete = state.lists.filter(list => list.id !== action.payload)
+
+      return {
+        ...state,
+        lists: [...newListsAfterDelete]
+      }
+    }
     case SET_LISTS:
       return {
         ...state,
