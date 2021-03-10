@@ -9,6 +9,7 @@ class LabelViewSet(ModelViewSet):
   """
   A viewset for labels
   """
+  queryset = Label.objects.all()
 
   def create(self, request):
     """
@@ -30,7 +31,7 @@ class LabelViewSet(ModelViewSet):
     label = Label.objects.get(pk=pk)
 
     # Check if data is valid with serializer
-    serializer = LabelSerializer(label, data=request.data)
+    serializer = LabelSerializer(label, data=request.data, exclude_fields=['board'])
     serializer.is_valid(raise_exception=True)
 
     # Save existing label
@@ -38,8 +39,10 @@ class LabelViewSet(ModelViewSet):
 
     return Response(data=serializer.data, status=status.HTTP_200_OK)
 
-  def delete(self, request, pk, format=None):
-
+  def destroy(self, request, pk=None):
+    """
+    Delete an existing label of a board
+    """
     label = Label.objects.filter(pk=pk)
 
     label.delete()
