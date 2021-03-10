@@ -23,11 +23,24 @@
     justify-content: space-between;
     flex-direction: row;
     cursor: pointer;
-    padding: 0.5rem 0.2rem;
+    margin: 0.5rem 0.2rem;
+
+    .input {
+      cursor: pointer;
+      padding: 0rem 0.1rem;
+      outline: none;
+    }
 
     .text {
       font-size: 1rem;
       font-weight: bold;
+      width: 100%;
+      padding: 0rem 0.5rem;
+    }
+
+    div.textInput input {
+      padding: 0.35rem 0.5rem;
+      background-color: $white;
     }
   }
 }
