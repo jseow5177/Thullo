@@ -35,7 +35,7 @@ class BoardViewSet(ModelViewSet):
 
     # Retrieve board lists
     boardLists = List.objects.filter(board=pk).order_by('order')
-    boardInfo['lists'] = ListSerializer(boardLists, many=True, exclude_fields=['order']).data
+    boardInfo['lists'] = ListSerializer(boardLists, many=True, exclude_fields=['order', 'board']).data
 
     # Retrieve board labels
     boardLabels = Label.objects.filter(board=pk).order_by('id')
